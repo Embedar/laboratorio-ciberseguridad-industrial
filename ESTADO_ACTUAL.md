@@ -17,10 +17,11 @@ Las cuatro actividades yFTK están acreditadas por la corrida20261112T163453Z-90
 
 ## Publicación
 
-Repositorio solicitado: privado, cuenta personal Embedar, nombre laboratorio-ciberseguridad-industrial. Se publica únicamente documentación/fuentes propias y evidencias revisadas. Configuración privada, claves, discos, dependencias, programas de terceros y PDF académico original quedan fuera del índiceGit.
+Repositorio publicado y verificado el16/11/2026: privado, cuenta personal Embedar, rama main: https://github.com/Embedar/laboratorio-ciberseguridad-industrial . Se clonó desde GitHub y35/35 comprobaciones de evidencia pasaron, sin carpetas privadas locales. Se publica únicamente documentación/fuentes propias y evidencias revisadas. Configuración privada, claves, discos, dependencias, programas de terceros y PDF académico original quedan fuera del índiceGit.
 
 VMware sustituye a VirtualBox; aceptación docente de esa adaptación no acreditada. ModbusPal usa su motor real sin GUI; no se creóAD1. Las mitigaciones están propuestas, no aplicadas a la víctima.
 
 ## Continuación
 
 Leer README.md para montar/repetir; docs/INFORME_TECNICO.md para detalle, docs/latex/informe_visual.pdf para lectura y docs/MATRIZ_CUMPLIMIENTO.md para cotejar requisitos. La carpeta del robotSTM32 y su firmware no se modificaron.
+
