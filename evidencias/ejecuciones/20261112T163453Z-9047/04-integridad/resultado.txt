@@ -1,0 +1,9 @@
+d33b57daa6af812c89638e4aaaac74c9a910f7a730d3ba5372326f81fa69d68c  original.evidencia
+75729913650b748c5889879b7e357d9a1759fd8f60f0ad37383b8b63305e48ec  copia-alterada.evidencia
+original.evidencia: OK
+copia-alterada.evidencia: OK
+Fecha UTC: 2026-11-12T16:38:40+00:00
+Fuente conservada: /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/comunicaciones.pcapng
+Copia original coincide con fuente: SI
+Copia alterada tiene hash distinto: SI
+Resultados: /home/lorenzo/lab-plc/evidencias/04-integridad/20261112T163840Z-10974

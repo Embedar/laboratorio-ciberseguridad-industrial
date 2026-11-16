@@ -1,0 +1,4 @@
+Fecha UTC: 2026-11-12T16:38:40+00:00
+Fuente conservada: /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/comunicaciones.pcapng
+Copia original coincide con fuente: SI
+Copia alterada tiene hash distinto: SI

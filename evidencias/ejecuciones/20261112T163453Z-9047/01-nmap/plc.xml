@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.99 scan initiated Thu Nov 12 11:36:34 2026 as: /usr/lib/nmap/nmap -&#45;privileged -n -sT -sV -sC -&#45;version-light -&#45;script-timeout 30s -p 22,502 -oA /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/01-nmap/plc 192.168.212.30 -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -&#45;privileged -n -sT -sV -sC -&#45;version-light -&#45;script-timeout 30s -p 22,502 -oA /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/01-nmap/plc 192.168.212.30" start="1794501394" startstr="Thu Nov 12 11:36:34 2026" version="7.99" xmloutputversion="1.05">
+<scaninfo type="connect" protocol="tcp" numservices="2" services="22,502"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.212.30" addrtype="ipv4"/>
+<address addr="00:50:56:22:00:30" addrtype="mac" vendor="VMware"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1794501394" endtime="1794501429"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.212.30" addrtype="ipv4"/>
+<address addr="00:50:56:22:00:30" addrtype="mac" vendor="VMware"/>
+<hostnames>
+</hostnames>
+<ports><port protocol="tcp" portid="22"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="ssh" product="OpenSSH" version="9.6p1 Ubuntu 3ubuntu13.20" extrainfo="Ubuntu Linux; protocol 2.0" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:openbsd:openssh:9.6p1</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service><script id="ssh-hostkey" output="&#xa;  256 25:63:ea:a2:55:b0:7b:b2:3d:95:ee:f9:11:03:ca:4d (ECDSA)&#xa;  256 60:26:38:40:d1:e9:51:b9:df:9b:0c:6e:e2:f6:d5:cc (ED25519)"><table>
+<elem key="fingerprint">2563eaa255b07bb23d95eef91103ca4d</elem>
+<elem key="key">AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBB9tkfQ6ptaBsF2H6e6pBCNJJ2Mj9x/wgC76V3iL9jNG+WgXf5hAupLnNJg4vBcFbYkn1hLxAB4O2SUiA2Ky3WQ=</elem>
+<elem key="type">ecdsa-sha2-nistp256</elem>
+<elem key="bits">256</elem>
+</table>
+<table>
+<elem key="fingerprint">60263840d1e951b9df9b0c6ee2f6d5cc</elem>
+<elem key="key">AAAAC3NzaC1lZDI1NTE5AAAAIIr8xK3us8MkVL2gyIP9JajgNhUuWLcv2aM08L5Efk5d</elem>
+<elem key="type">ssh-ed25519</elem>
+<elem key="bits">256</elem>
+</table>
+</script></port>
+<port protocol="tcp" portid="502"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="mbap" method="table" conf="3"/></port>
+</ports>
+<times srtt="617" rttvar="2913" to="100000"/>
+</host>
+<runstats><finished time="1794501429" timestr="Thu Nov 12 11:37:09 2026" summary="Nmap done at Thu Nov 12 11:37:09 2026; 1 IP address (1 host up) scanned in 35.56 seconds" elapsed="35.56" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

@@ -1,0 +1,24 @@
+
+===================================================================
+Protocol Hierarchy Statistics
+Filter: 
+
+frame                                    frames:154 bytes:15373
+  eth                                    frames:154 bytes:15373
+    ip                                   frames:152 bytes:15253
+      tcp                                frames:133 bytes:12142
+        http                             frames:2 bytes:1277
+          data-text-lines                frames:1 bytes:1133
+        mbtcp                            frames:6 bytes:483
+          modbus                         frames:6 bytes:483
+        telnet                           frames:33 bytes:3883
+        ftp                              frames:16 bytes:1371
+      udp                                frames:19 bytes:3111
+        nbns                             frames:9 bytes:972
+        dns                              frames:2 bytes:174
+        nbdgm                            frames:8 bytes:1965
+          smb                            frames:8 bytes:1965
+            mailslot                     frames:8 bytes:1965
+              browser                    frames:8 bytes:1965
+    arp                                  frames:2 bytes:120
+===================================================================

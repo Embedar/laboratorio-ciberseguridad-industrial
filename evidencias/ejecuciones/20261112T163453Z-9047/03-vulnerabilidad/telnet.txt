@@ -1,0 +1,46 @@
+UTC: 2026-11-12T16:37:13.911172+00:00
+Alcance fijo: 192.168.212.20:23; credencial publica de laboratorio msfadmin:msfadmin
+Prueba: iniciar sesion y consultar id/uname; no modifica archivos
+RESULTADO: acceso con credencial por defecto y consultas confirmados
+--- TRANSCRIPCION RECIBIDA ---
+Trying 192.168.212.20...
+Connected to 192.168.212.20.
+Escape character is '^]'.
+                _                  _       _ _        _     _      ____  
+ _ __ ___   ___| |_ __ _ ___ _ __ | | ___ (_) |_ __ _| |__ | | ___|___ \ 
+| '_ ` _ \ / _ \ __/ _` / __| '_ \| |/ _ \| | __/ _` | '_ \| |/ _ \ __) |
+| | | | | |  __/ || (_| \__ \ |_) | | (_) | | || (_| | |_) | |  __// __/ 
+|_| |_| |_|\___|\__\__,_|___/ .__/|_|\___/|_|\__\__,_|_.__/|_|\___|_____|
+                            |_|                                          
+
+
+Warning: Never expose this VM to an untrusted network!
+
+Contact: msfdev[at]metasploit.com
+
+Login with msfadmin/msfadmin to get started
+
+
+metasploitable login: msfadmin
+Password: 
+Last login: Sun May 20 15:50:42 EDT 2012 from 172.16.123.1 on pts/1
+Linux metasploitable 2.6.24-16-server #1 SMP Thu Apr 10 13:58:00 UTC 2008 i686
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+To access official Ubuntu documentation, please visit:
+http://help.ubuntu.com/
+No mail.
+msfadmin@metasploitable:~$ id
+uid=1000(msfadmin) gid=1000(msfadmin) groups=4(adm),20(dialout),24(cdrom),25(floppy),29(audio),30(dip),44(video),46(plugdev),107(fuse),111(lpadmin),112(admin),119(sambashare),1000(msfadmin)
+msfadmin@metasploitable:~$ uname -a
+Linux metasploitable 2.6.24-16-server #1 SMP Thu Apr 10 13:58:00 UTC 2008 i686 GNU/Linux
+msfadmin@metasploitable:~$ exit
+logout
+Connection closed by foreign host.
+

@@ -1,0 +1,1 @@
+local ::1 dev lo table local proto kernel metric 0 pref medium

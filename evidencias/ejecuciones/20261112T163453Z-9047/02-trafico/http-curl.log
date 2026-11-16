@@ -1,0 +1,23 @@
+
+UTC 2026-11-12T16:37:10+00:00 COMANDO: curl --noproxy \* --connect-timeout 5 --max-time 15 -f -v --dump-header /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/http-headers.txt --output /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/http-body.html http://192.168.212.20/
+*   Trying 192.168.212.20:80...
+* Established connection to 192.168.212.20 (192.168.212.20 port 80) from 192.168.212.10 port 37150 
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                              0* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: 192.168.212.20
+> User-Agent: curl/8.20.0
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Date: Thu, 12 Nov 2026 16:37:17 GMT
+< Server: Apache/2.2.8 (Ubuntu) DAV/2
+< X-Powered-By: PHP/5.2.4-2ubuntu5.10
+< Content-Length: 891
+< Content-Type: text/html
+< 
+{ [891 bytes data]
+100    891 100    891   0      0  39570      0                              0100    891 100    891   0      0  39346      0                              0100    891 100    891   0      0  39130      0                              0
+* Connection #0 to host 192.168.212.20:80 left intact

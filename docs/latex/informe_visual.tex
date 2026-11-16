@@ -1,0 +1,150 @@
+% !TeX program = pdflatex
+% !TeX encoding = UTF-8
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{lmodern,graphicx,float,caption,parskip,tabularx,booktabs,array,enumitem}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{imagenes/}}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\intextsep}{5pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlist[enumerate]{leftmargin=*,itemsep=4pt,topsep=4pt}
+\newcommand{\captura}[3]{\begin{figure}[H]\centering\includegraphics[width=#1\linewidth]{#2}\caption{#3}\end{figure}}
+\newcommand{\pagina}[1]{\clearpage\section*{#1}}
+\title{\vspace{-1.3cm}\textbf{Auditoría de seguridad\\de un laboratorio industrial simulado}}
+\author{Lorenzo\\Universidad Santo Tomás -- Ciberseguridad en la Industria}
+\date{Práctica: 12 de noviembre de 2026\\\small Revisión documental: 16 de noviembre de 2026}
+
+\begin{document}
+\maketitle\vspace{-0.7cm}
+\section*{1. Montaje del laboratorio: preparación}
+\textbf{Objetivo.} Reconocer equipos y servicios, analizar tráfico, realizar una prueba controlada y verificar la integridad de la evidencia en una red virtual autorizada.
+
+\begin{enumerate}
+\item \textbf{Revisar el equipo disponible.} Se encontró VMware Workstation 26 y una Kali existente. Se reutilizó esa Kali; no se instaló otra ni se duplicó su disco. Se ajustó a 4 GB de RAM y 2 CPU, con respaldo previo de la configuración.
+\item \textbf{Definir la red.} Se eligió VMnet1 host-only, \texttt{192.168.212.0/24}. El anfitrión quedó en \texttt{.1}; se reservaron \texttt{.10}, \texttt{.20} y \texttt{.30} para los tres roles. Host-only también permite acceso desde el anfitrión.
+\item \textbf{Obtener la víctima.} Se descargó Metasploitable 2 de SourceForge, se comprobó el CRC del ZIP y se registró su SHA-256 local. Ese hash local acredita integridad de la copia; no se contrastó con una firma del proveedor.
+\item \textbf{Preparar el PLC.} Se descargó el VMDK Ubuntu 24.04 y se contrastó su SHA-256 con el listado oficial. Se generó una semilla NoCloud para crear el usuario y preparar SSH, VMware Tools y Java.
+\end{enumerate}
+
+\captura{0.89}{arquitectura.png}{Arquitectura implementada: roles, IP y recursos asignados.}
+\textbf{Adaptación declarada.} Se utilizó VMware por elección del usuario; la guía del curso nombra VirtualBox. La equivalencia técnica no acredita aprobación docente de esa sustitución. ModbusPal se utilizó mediante su motor Java real, sin su GUI.
+
+\pagina{1. Montaje del laboratorio: configuración y verificación}
+\begin{enumerate}[start=5]
+\item \textbf{Aislar y configurar la víctima.} Se importó el disco, se dejó un único adaptador VMnet1 y se asignaron 512 MB y 1 CPU. Se identificó la IP DHCP por su MAC, se configuró \texttt{192.168.212.20/24} y se detuvo DHCP. No se conectó esta VM a NAT ni a la red física.
+\item \textbf{Aprovisionar y aislar el PLC.} El Ubuntu limpio usó NAT temporal para instalar paquetes. Después se apagó, se cambió a VMnet1 y se fijó \texttt{192.168.212.30/24}, con 768 MB y 1 CPU. Una incidencia de nombre de interfaz se corrigió mediante coincidencia por MAC y nombre \texttt{ens33}.
+\item \textbf{Habilitar la administración y el simulador.} Se instalaron claves SSH dedicadas. En el PLC se instaló ModbusPal 1.6b con un adaptador Java propio, como servicio \texttt{modbuspal-lab}; se comprobó TCP 502 y una lectura FC03. Se configuraron cuatro registros constantes: \texttt{[250,1000,1,750]}.
+\item \textbf{Comprobar antes de auditar.} Los tres VMX tenían un único adaptador host-only. Se verificaron las IP, las rutas directas y la ausencia de gateway en los invitados; se desactivó su reenvío IP. Kali quedó en \texttt{192.168.212.10/24}, con SSH y herramientas de captura disponibles.
+\end{enumerate}
+
+\captura{0.91}{00-kali-estado-ssh.png}{Estado real de Kali: dirección, rutas, reenvío desactivado y versiones de herramientas.}
+\textbf{Resultado del montaje.} La víctima y el PLC respondieron desde Kali. Solo se autorizó auditar \texttt{.20} y \texttt{.30}. La comprobación estática VMX se complementó con las rutas de los invitados; no se presenta como una auditoría completa de ICS en Windows.
+
+\pagina{2. Actividad 1: reconocimiento de infraestructura}
+\textbf{Paso 1.} El descubrimiento identificó activos a \texttt{192.168.212.20} y \texttt{192.168.212.30}. \textbf{Paso 2.} Se exploraron los 65.535 puertos TCP de la víctima con detección ligera de versiones y scripts predeterminados; en el PLC solo se exploraron 22 y 502. \textbf{Paso 3.} Se relacionaron puertos, servicios y riesgos.
+\captura{0.81}{01-nmap.png}{Nmap registró 30 puertos TCP abiertos y 65.505 cerrados en la víctima.}
+
+{\fontsize{8}{9.5}\selectfont\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{r Y r Y}
+\toprule
+\multicolumn{4}{l}{\textbf{Metasploitable 2 -- IP 192.168.212.20 -- todos los puertos de esta tabla son TCP}}\\
+\textbf{Puerto} & \textbf{Servicio / versión observada} & \textbf{Puerto} & \textbf{Servicio / versión observada}\\\midrule
+21 & ftp / vsftpd 2.3.4 & 2121 & ftp / ProFTPD 1.3.1 \\
+22 & ssh / OpenSSH 4.7p1 Debian 8ubuntu1 & 3306 & mysql / MySQL 5.0.51a-3ubuntu5 \\
+23 & telnet / Linux telnetd & 3632 & distccd / distccd v1 \\
+25 & smtp / Postfix smtpd & 5432 & postgresql / PostgreSQL DB 8.3.0 - 8.3.7 \\
+53 & domain / ISC BIND 9.4.2 & 5900 & vnc / VNC \\
+80 & http / Apache httpd 2.2.8 & 6000 & X11 \\
+111 & rpcbind & 6667 & irc / UnrealIRCd \\
+139 & netbios-ssn / Samba smbd 3.X - 4.X & 6697 & irc / UnrealIRCd \\
+445 & netbios-ssn / Samba smbd 3.0.20-Debian & 8009 & ajp13 / Apache Jserv \\
+512 & exec / netkit-rsh rexecd & 8180 & unknown \\
+513 & login? & 8787 & drb / Ruby DRb RMI \\
+514 & shell / Netkit rshd & 33888 & unknown \\
+1099 & java-rmi / GNU Classpath grmiregistry & 35537 & unknown \\
+1524 & bindshell / Metasploitable root shell & 51252 & unknown \\
+2049 & rpcbind & 55144 & unknown \\
+\midrule
+\multicolumn{4}{l}{\textbf{PLC Ubuntu + ModbusPal -- IP 192.168.212.30}}\\
+22 & ssh / OpenSSH 9.6p1 Ubuntu & 502 & mbap? / Modbus TCP confirmado con FC03\\
+\bottomrule
+\end{tabularx}}
+{\small Se conservan las etiquetas inciertas \texttt{login?}, \texttt{unknown} y \texttt{mbap?}. El banner no acredita por sí solo una vulnerabilidad explotable. La tabla recoge resultados de la ejecución original; los puertos dinámicos pueden variar en otra corrida. Kali \texttt{.10} fue el auditor, no un blanco de ese sondeo.}
+
+\pagina{3. Actividad 2: captura y análisis de comunicaciones}
+\textbf{Paso 1: capturar.} Se inició dumpcap en \texttt{eth0} durante 90 segundos, limitado a tráfico que involucrara a \texttt{.20} o \texttt{.30}. Se conservaron \textbf{154 tramas}, con 0 descartes registrados en la interfaz.
+
+\textbf{Paso 2: reconocer TCP y HTTP.} Las tramas 1, 2 y 3 muestran SYN, SYN-ACK y ACK. La trama 4 contiene \texttt{GET /} desde \texttt{.10:37150} hacia \texttt{.20:80}; la trama 6 devuelve \texttt{200 OK}. El contenido HTTP es legible y no demuestra protección TLS.
+\captura{0.80}{02-http.png}{Wireshark: solicitud HTTP de Kali y respuesta de la víctima, con IP de origen y destino.}
+
+\textbf{Paso 3: reconocer Modbus TCP.} Kali \texttt{.10} leyó el PLC \texttt{.30:502}, unidad 1, función 03, dirección PDU inicial 0 y cantidad 4. Las tramas 14/16, 25/27 y 35/37 forman tres pares de petición/respuesta, con valores \texttt{[250,1000,1,750]}. Son datos simulados, no mediciones físicas. Se aplicaron los filtros \texttt{modbus} y \texttt{tcp.port == 502}.
+\captura{0.80}{03-modbus.png}{Tres intercambios Modbus FC03. No se probó escritura de registros.}
+
+\pagina{4. Actividad 3: investigación y prueba controlada}
+\textbf{Paso 1: elegir una condición insegura.} El inventario mostró Telnet en TCP 23. Rapid7 documenta la credencial de laboratorio \texttt{msfadmin/msfadmin}; MITRE describe el riesgo de conservar credenciales predeterminadas en CWE-1392. Se investigó esa debilidad y la exposición en claro de Telnet, relacionada con CWE-319 [1--3].
+
+\textbf{Paso 2: ejecutar la prueba aislada.} Desde Kali se inició sesión únicamente en la víctima \texttt{192.168.212.20}. Se consultaron \texttt{id} y \texttt{uname -a}, y se cerró la conexión. La evidencia confirmó acceso como \texttt{uid=1000(msfadmin)}, no como root.
+\captura{0.93}{04-telnet.png}{Transcripción de la prueba: acceso con la credencial pública y consultas de identidad y kernel.}
+
+\textbf{Paso 3: interpretar el resultado.} Las tramas 65 y 70 del PCAP contienen el usuario y la contraseña sintética en claro. Conocer la credencial permite el acceso observado; un tercero situado en un trayecto no confiable podría observar esas credenciales. No se explotó una CVE ni se modificaron archivos con los comandos de la prueba.
+
+\textbf{Paso 4: comprobar otro servicio.} FTP aceptó \texttt{anonymous}, devolvió código 230 y completó un listado vacío. La documentación oficial de \texttt{ftp-anon} explica esta comprobación [4]. No se demostró lectura de archivos, carga ni explotación de la puerta trasera de vsftpd.
+
+\textbf{Mitigación propuesta.} Cambiar credenciales, retirar Telnet y FTP anónimo innecesarios y administrar por SSH. La corroboración posterior sería comprobar TCP 23 cerrado y rechazo de la credencial anterior. Estas medidas se proponen; no se aplicaron para conservar el laboratorio didáctico.
+
+\pagina{5. Actividad 4: integridad SHA-256}
+\begin{enumerate}
+\item \textbf{Seleccionar y registrar.} Se eligió el PCAP de la actividad 2, de \textbf{20.940 bytes}. Se calculó SHA-256 y se preservó una copia original sin permiso de escritura como protección frente a accidentes.
+\item \textbf{Modificar solo una copia.} A otra copia se añadieron 39 bytes: un salto de línea, el texto \texttt{ALTERACION CONTROLADA DEL LABORATORIO} y otro salto de línea. La copia alterada quedó en \textbf{20.979 bytes}.
+\item \textbf{Recalcular y comparar.} La fuente y el original conservaron el mismo hash; el de la copia alterada cambió. La exportación a Windows se contrastó con \texttt{Get-FileHash} y mantuvo el valor del PCAP.
+\end{enumerate}
+\captura{0.92}{05-integridad.png}{Cálculo, registro y verificación de los hashes de las dos copias.}
+
+\begin{tabularx}{\linewidth}{@{}lY@{}}\toprule
+\textbf{Archivo} & \textbf{SHA-256 completo}\\\midrule
+PCAP / original & {\ttfamily\footnotesize d33b57daa6af812c89638e4aaaac74c9\newline a910f7a730d3ba5372326f81fa69d68c}\\[4pt]
+Copia alterada & {\ttfamily\footnotesize 75729913650b748c5889879b7e357d9a\newline 1759fd8f60f0ad37383b8b63305e48ec}\\\bottomrule
+\end{tabularx}
+
+\textbf{Paso 4: explicar la integridad.} Un cambio en los bytes produjo un resumen diferente. El resultado \texttt{OK} para cada archivo significa que coincide con \emph{su propia entrada} del manifiesto, no que original y copia sean iguales. Se verificaron 26/26 entradas de la ejecución y 2/2 del ejercicio de integridad. Un hash aislado no demuestra autoría ni una cadena de custodia completa.
+
+\pagina{6. Revisión complementaria en FTK Imager}
+\textbf{Paso 1: incorporar la evidencia.} Se añadió la carpeta \texttt{02-trafico} mediante \emph{File / Add Evidence Item / Contents of a Folder}. FTK Imager 8.3.0.27 mostró la fuente en Evidence Tree. El usuario realizó los clics manualmente porque el control automático tenía un nivel de integridad Windows inferior.
+\captura{0.9}{06-ftk-carpeta.jpg}{Carpeta de tráfico incorporada como Contents of Folder.}
+
+\textbf{Paso 2: inspeccionar el archivo.} Se expandió la carpeta y se seleccionó \texttt{comunicaciones.pcapng}. Se observaron tipo \emph{Regular File}, tamaño \textbf{20.940 bytes}, propiedades y vista hexadecimal.
+\captura{0.9}{07-ftk-inspeccion.jpg}{Archivo seleccionado, propiedades y bytes visibles en FTK.}
+
+\textbf{Paso 3: corroborar.} El SHA-256 posterior, calculado externamente con Get-FileHash, coincidió con el original. Ese cálculo no se atribuye a FTK. La revisión fue de archivos: no se creó un contenedor AD1 ni una imagen física. El análisis de protocolos se realizó con Wireshark.
+
+\pagina{7. Riesgos, recomendaciones y conclusiones}
+{\small\renewcommand{\arraystretch}{1.14}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.3cm} Y Y@{}}\toprule
+\textbf{Condición observada} & \textbf{Impacto potencial y límite} & \textbf{Medida y forma de corroborar}\\\midrule
+Credencial predeterminada y Telnet en claro; prueba y tramas 65/70 & Acceso como msfadmin y exposición de la credencial. No se demostró acceso root. & Cambiar credenciales y retirar Telnet; verificar TCP 23 cerrado y rechazo de la credencial anterior.\\
+HTTP legible; tramas 4/6 & Observación del contenido en un trayecto no confiable. Solo se leyó una página pública del laboratorio. & Usar HTTPS validado y control de acceso; comprobar el canal y evitar publicar datos sensibles por HTTP.\\
+Lectura Modbus FC03 sin autenticación & Un cliente con alcance puede leer los registros simulados. No se probó escritura. & Segmentar y permitir solo clientes autorizados; verificar bloqueo desde un cliente no autorizado.\\
+FTP anónimo permitido; código 230 & Acceso sin identidad individual. El listado estaba vacío; no se acreditó extracción ni carga. & Retirar acceso anónimo o servicio innecesario; verificar rechazo del inicio de sesión anónimo.\\
+Firma SMB desactivada según Nmap & Posible manipulación de comunicaciones en un trayecto no confiable; no se ejecutó ese ataque. & Actualizar/retirar SMB antiguo, exigir firma y comprobar nuevamente la configuración del servicio.\\\bottomrule
+\end{tabularx}}
+
+\textbf{Conclusión.} Se reconocieron dos blancos, se inventariaron sus servicios y se conservó tráfico HTTP, Modbus y Telnet. La prueba confirmó credenciales predeterminadas y los hashes permitieron detectar una alteración controlada. Los resultados respaldan reducir servicios, gestionar credenciales y proteger las comunicaciones industriales.
+
+\textbf{Correspondencia de entregables.} Diagrama: sección 1; tabla y Nmap: sección 2; Wireshark: sección 3; prueba y fuentes: sección 4; SHA-256: sección 5; FTK: sección 6; cinco riesgos, recomendaciones y conclusiones: sección 7. La matriz completa por subítem está en \texttt{docs/MATRIZ\_CUMPLIMIENTO.md}.
+
+\textbf{Límites.} VMware sustituyó a VirtualBox sin aprobación docente acreditada. Se usó el motor real ModbusPal sin su GUI. Host-only incluye al anfitrión. Las mitigaciones no fueron aplicadas; son propuestas. La práctica se ejecutó el 12 de noviembre; esta revisión del 16 de noviembre amplía la documentación sin repetir ataques ni inventar resultados.
+
+\textbf{Referencias de investigación.}\par
+{\footnotesize\raggedright
+[1] Rapid7, \href{https://help.rapid7.com/metasploit/Content/getting-started/setting-up-test-env.html}{Setting Up a Vulnerable Target}: entorno y credencial de laboratorio.\par
+[2] MITRE, \href{https://cwe.mitre.org/data/definitions/1392.html}{CWE-1392: Use of Default Credentials}.\par
+[3] MITRE, \href{https://cwe.mitre.org/data/definitions/319.html}{CWE-319: Cleartext Transmission of Sensitive Information}.\par
+[4] Nmap, \href{https://nmap.org/nsedoc/scripts/ftp-anon.html}{Documentación oficial del script ftp-anon}.\par
+Fuente académica: guía de la Universidad Santo Tomás suministrada para la práctica. Evidencias: ejecución \texttt{20261112T163453Z-9047}. Las capturas Kali muestran aplicaciones reales en Xvfb por SSH; las de FTK corresponden a Windows. Los comandos reproducibles se documentan en el README del repositorio privado.\par}
+\end{document}

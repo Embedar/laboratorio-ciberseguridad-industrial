@@ -1,0 +1,7 @@
+{
+  "VMwareDir": "C:\\Program Files\\VMware\\VMware Workstation",
+  "KaliVmx": "C:\\ruta\\Kali\\Kali.vmx",
+  "KaliUser": "kali",
+  "NatPrefix": "192.168.123",
+  "DhcpLeasesPath": "C:\\ProgramData\\VMware\\vmnetdhcp.leases"
+}

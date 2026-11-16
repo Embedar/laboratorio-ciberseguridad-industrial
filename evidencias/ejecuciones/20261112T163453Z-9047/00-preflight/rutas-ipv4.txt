@@ -1,0 +1,9 @@
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown 
+192.168.212.0/24 dev eth0 proto kernel scope link src 192.168.212.10 metric 100 
+local 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1 
+local 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1 
+broadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1 
+local 172.17.0.1 dev docker0 table local proto kernel scope host src 172.17.0.1 
+broadcast 172.17.255.255 dev docker0 table local proto kernel scope link src 172.17.0.1 linkdown 
+local 192.168.212.10 dev eth0 table local proto kernel scope host src 192.168.212.10 
+broadcast 192.168.212.255 dev eth0 table local proto kernel scope link src 192.168.212.10 

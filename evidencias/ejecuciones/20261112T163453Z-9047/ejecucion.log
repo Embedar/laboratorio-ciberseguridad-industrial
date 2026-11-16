@@ -1,0 +1,313 @@
+Inicio UTC: 2026-11-12T16:34:53+00:00
+Interfaz: eth0
+Objetivos fijos: 192.168.212.20 y 192.168.212.30
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0             UP             192.168.212.10/24 
+docker0          DOWN           172.17.0.1/16 
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown 
+192.168.212.0/24 dev eth0 proto kernel scope link src 192.168.212.10 metric 100 
+local 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1 
+local 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1 
+broadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1 
+local 172.17.0.1 dev docker0 table local proto kernel scope host src 172.17.0.1 
+broadcast 172.17.255.255 dev docker0 table local proto kernel scope link src 172.17.0.1 linkdown 
+local 192.168.212.10 dev eth0 table local proto kernel scope host src 192.168.212.10 
+broadcast 192.168.212.255 dev eth0 table local proto kernel scope link src 192.168.212.10 
+local ::1 dev lo table local proto kernel metric 0 pref medium
+Interfaz no operativa conservada, sin cambios: docker0 state=DOWN IPv4=[{'family': 'inet', 'local': '172.17.0.1', 'prefixlen': 16, 'broadcast': '172.17.255.255', 'scope': 'global', 'label': 'docker0', 'valid_life_time': 4294967295, 'preferred_life_time': 4294967295}]
+Unica IPv4 global en interfaz operativamente UP: [('eth0', '192.168.212.10', 24)]
+PREFLIGHT LOCAL OK. VMX host-only y ausencia de ICS/puente deben estar verificados previamente en Windows.
+
+UTC 2026-11-12T16:34:53+00:00 COMANDO: timeout 120 nmap -n -sn -PS22\,502 192.168.212.20 192.168.212.30 -oA /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/01-nmap/descubrimiento
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-11-12 11:34 -0500
+Nmap scan report for 192.168.212.20
+Host is up (0.00039s latency).
+MAC Address: 00:0C:29:7A:2F:B5 (VMware)
+Nmap scan report for 192.168.212.30
+Host is up (0.00062s latency).
+MAC Address: 00:50:56:22:00:30 (VMware)
+Nmap done: 2 IP addresses (2 hosts up) scanned in 0.13 seconds
+
+UTC 2026-11-12T16:34:53+00:00 COMANDO: timeout 900 nmap -n -sT -sV -sC --version-light --script-timeout 30s --host-timeout 600s -p- 192.168.212.20 -oA /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/01-nmap/metasploitable
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-11-12 11:34 -0500
+Nmap scan report for 192.168.212.20
+Host is up (0.00066s latency).
+Not shown: 65505 closed tcp ports (conn-refused)
+PORT      STATE SERVICE     VERSION
+21/tcp    open  ftp         vsftpd 2.3.4
+| ftp-syst: 
+|   STAT: 
+| FTP server status:
+|      Connected to 192.168.212.10
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      vsFTPd 2.3.4 - secure, fast, stable
+|_End of status
+|_ftp-anon: Anonymous FTP login allowed (FTP code 230)
+22/tcp    open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
+| ssh-hostkey: 
+|   1024 60:0f:cf:e1:c0:5f:6a:74:d6:90:24:fa:c4:d5:6c:cd (DSA)
+|_  2048 56:56:24:0f:21:1d:de:a7:2b:ae:61:b1:24:3d:e8:f3 (RSA)
+23/tcp    open  telnet      Linux telnetd
+25/tcp    open  smtp        Postfix smtpd
+|_smtp-commands: metasploitable.localdomain, PIPELINING, SIZE 10240000, VRFY, ETRN, STARTTLS, ENHANCEDSTATUSCODES, 8BITMIME, DSN
+53/tcp    open  domain      ISC BIND 9.4.2
+| dns-nsid: 
+|_  bind.version: 9.4.2
+80/tcp    open  http        Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+|_http-title: Metasploitable2 - Linux
+111/tcp   open  rpcbind
+139/tcp   open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp   open  netbios-ssn Samba smbd 3.0.20-Debian (workgroup: WORKGROUP)
+512/tcp   open  exec        netkit-rsh rexecd
+513/tcp   open  login?
+514/tcp   open  shell       Netkit rshd
+1099/tcp  open  java-rmi    GNU Classpath grmiregistry
+1524/tcp  open  bindshell   Metasploitable root shell
+2049/tcp  open  rpcbind
+2121/tcp  open  ftp         ProFTPD 1.3.1
+3306/tcp  open  mysql       MySQL 5.0.51a-3ubuntu5
+| mysql-info: 
+|   Protocol: 10
+|   Version: 5.0.51a-3ubuntu5
+|   Thread ID: 9
+|   Capabilities flags: 43564
+|   Some Capabilities: Speaks41ProtocolNew, SupportsCompression, SupportsTransactions, LongColumnFlag, Support41Auth, SwitchToSSLAfterHandshake, ConnectWithDatabase
+|   Status: Autocommit
+|_  Salt: "cPFO8k1S.++5g,BFyO^
+3632/tcp  open  distccd     distccd v1 ((GNU) 4.2.4 (Ubuntu 4.2.4-1ubuntu4))
+5432/tcp  open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+|_ssl-date: 2026-11-12T16:36:11+00:00; +7s from scanner time.
+5900/tcp  open  vnc         VNC (protocol 3.3)
+| vnc-info: 
+|   Protocol version: 3.3
+|   Security types: 
+|_    VNC Authentication (2)
+6000/tcp  open  X11         (access denied)
+6667/tcp  open  irc         UnrealIRCd
+6697/tcp  open  irc         UnrealIRCd (Admin email admin@Metasploitable.LAN)
+8009/tcp  open  ajp13       Apache Jserv (Protocol v1.3)
+|_ajp-methods: Failed to get a valid response for the OPTION request
+8180/tcp  open  unknown
+|_http-title: Apache Tomcat/5.5
+|_http-favicon: Apache Tomcat
+8787/tcp  open  drb         Ruby DRb RMI (Ruby 1.8; path /usr/lib/ruby/1.8/drb)
+33888/tcp open  unknown
+35537/tcp open  unknown
+51252/tcp open  unknown
+55144/tcp open  unknown
+MAC Address: 00:0C:29:7A:2F:B5 (VMware)
+Service Info: Hosts:  metasploitable.localdomain, irc.Metasploitable.LAN; OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+|_clock-skew: mean: 1h40m07s, deviation: 2h53m12s, median: 6s
+|_nbstat: NetBIOS name: METASPLOITABLE, NetBIOS user: <unknown>, NetBIOS MAC: <unknown> (unknown)
+| smb-os-discovery: 
+|   OS: Unix (Samba 3.0.20-Debian)
+|   Computer name: metasploitable
+|   NetBIOS computer name: 
+|   Domain name: localdomain
+|   FQDN: metasploitable.localdomain
+|_  System time: 2026-11-12T11:35:41-05:00
+|_smb2-time: Protocol negotiation failed (SMB2)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 100.39 seconds
+
+UTC 2026-11-12T16:36:34+00:00 COMANDO: timeout 180 nmap -n -sT -sV -sC --version-light --script-timeout 30s -p 22\,502 192.168.212.30 -oA /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/01-nmap/plc
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-11-12 11:36 -0500
+Nmap scan report for 192.168.212.30
+Host is up (0.00062s latency).
+
+PORT    STATE SERVICE VERSION
+22/tcp  open  ssh     OpenSSH 9.6p1 Ubuntu 3ubuntu13.20 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 25:63:ea:a2:55:b0:7b:b2:3d:95:ee:f9:11:03:ca:4d (ECDSA)
+|_  256 60:26:38:40:d1:e9:51:b9:df:9b:0c:6e:e2:f6:d5:cc (ED25519)
+502/tcp open  mbap?
+MAC Address: 00:50:56:22:00:30 (VMware)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 35.56 seconds
+
+UTC 2026-11-12T16:37:09+00:00 COMANDO: dumpcap -i eth0 -f host\ 192.168.212.20\ or\ host\ 192.168.212.30 -a duration:90 -w /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/comunicaciones.pcapng
+
+UTC 2026-11-12T16:37:10+00:00 COMANDO: python3 /home/lorenzo/lab-plc/scripts/kali/modbus_read.py --host 192.168.212.30 --port 502 --unit 1 --address 0 --count 4
+{"timestamp_utc": "2026-11-12T16:37:10.674985+00:00", "host": "192.168.212.30", "port": 502, "unit": 1, "function": 3, "address_zero_based": 0, "registers": [250, 1000, 1, 750]}
+
+UTC 2026-11-12T16:37:11+00:00 COMANDO: python3 /home/lorenzo/lab-plc/scripts/kali/modbus_read.py --host 192.168.212.30 --port 502 --unit 1 --address 0 --count 4
+{"timestamp_utc": "2026-11-12T16:37:11.753717+00:00", "host": "192.168.212.30", "port": 502, "unit": 1, "function": 3, "address_zero_based": 0, "registers": [250, 1000, 1, 750]}
+
+UTC 2026-11-12T16:37:12+00:00 COMANDO: python3 /home/lorenzo/lab-plc/scripts/kali/modbus_read.py --host 192.168.212.30 --port 502 --unit 1 --address 0 --count 4
+{"timestamp_utc": "2026-11-12T16:37:12.839243+00:00", "host": "192.168.212.30", "port": 502, "unit": 1, "function": 3, "address_zero_based": 0, "registers": [250, 1000, 1, 750]}
+
+UTC 2026-11-12T16:37:13+00:00 COMANDO: python3 /home/lorenzo/lab-plc/scripts/kali/Prueba-Telnet.py --host 192.168.212.20 --timeout 15
+UTC: 2026-11-12T16:37:13.911172+00:00
+Alcance fijo: 192.168.212.20:23; credencial publica de laboratorio msfadmin:msfadmin
+Prueba: iniciar sesion y consultar id/uname; no modifica archivos
+RESULTADO: acceso con credencial por defecto y consultas confirmados
+--- TRANSCRIPCION RECIBIDA ---
+Trying 192.168.212.20...
+Connected to 192.168.212.20.
+Escape character is '^]'.
+                _                  _       _ _        _     _      ____  
+ _ __ ___   ___| |_ __ _ ___ _ __ | | ___ (_) |_ __ _| |__ | | ___|___ \ 
+| '_ ` _ \ / _ \ __/ _` / __| '_ \| |/ _ \| | __/ _` | '_ \| |/ _ \ __) |
+| | | | | |  __/ || (_| \__ \ |_) | | (_) | | || (_| | |_) | |  __// __/ 
+|_| |_| |_|\___|\__\__,_|___/ .__/|_|\___/|_|\__\__,_|_.__/|_|\___|_____|
+                            |_|                                          
+
+
+Warning: Never expose this VM to an untrusted network!
+
+Contact: msfdev[at]metasploit.com
+
+Login with msfadmin/msfadmin to get started
+
+
+metasploitable login: msfadmin
+Password: 
+Last login: Sun May 20 15:50:42 EDT 2012 from 172.16.123.1 on pts/1
+Linux metasploitable 2.6.24-16-server #1 SMP Thu Apr 10 13:58:00 UTC 2008 i686
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+To access official Ubuntu documentation, please visit:
+http://help.ubuntu.com/
+No mail.
+msfadmin@metasploitable:~$ id
+uid=1000(msfadmin) gid=1000(msfadmin) groups=4(adm),20(dialout),24(cdrom),25(floppy),29(audio),30(dip),44(video),46(plugdev),107(fuse),111(lpadmin),112(admin),119(sambashare),1000(msfadmin)
+msfadmin@metasploitable:~$ uname -a
+Linux metasploitable 2.6.24-16-server #1 SMP Thu Apr 10 13:58:00 UTC 2008 i686 GNU/Linux
+msfadmin@metasploitable:~$ exit
+logout
+Connection closed by foreign host.
+
+
+UTC 2026-11-12T16:37:24+00:00 COMANDO: curl --noproxy * --max-time 15 --user anonymous:lab@example.invalid ftp://192.168.212.20/
+FTP anonimo: comando completado; revisar si lista archivos o solo directorio vacio.
+
+UTC 2026-11-12T16:38:40+00:00 COMANDO: tshark -r /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/comunicaciones.pcapng -q -z io\,phs
+
+===================================================================
+Protocol Hierarchy Statistics
+Filter: 
+
+frame                                    frames:154 bytes:15373
+  eth                                    frames:154 bytes:15373
+    ip                                   frames:152 bytes:15253
+      tcp                                frames:133 bytes:12142
+        http                             frames:2 bytes:1277
+          data-text-lines                frames:1 bytes:1133
+        mbtcp                            frames:6 bytes:483
+          modbus                         frames:6 bytes:483
+        telnet                           frames:33 bytes:3883
+        ftp                              frames:16 bytes:1371
+      udp                                frames:19 bytes:3111
+        nbns                             frames:9 bytes:972
+        dns                              frames:2 bytes:174
+        nbdgm                            frames:8 bytes:1965
+          smb                            frames:8 bytes:1965
+            mailslot                     frames:8 bytes:1965
+              browser                    frames:8 bytes:1965
+    arp                                  frames:2 bytes:120
+===================================================================
+
+UTC 2026-11-12T16:38:40+00:00 COMANDO: tshark -r /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/comunicaciones.pcapng -Y http\ or\ modbus\ or\ telnet -T fields -E header=y -E separator=\, -E quote=d -e frame.number -e frame.time_relative -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e _ws.col.Protocol -e http.request.method -e http.request.uri -e http.response.code -e modbus.func_code
+frame.number,frame.time_relative,ip.src,ip.dst,tcp.srcport,tcp.dstport,_ws.col.protocol,http.request.method,http.request.uri,http.response.code,modbus.func_code
+"4","0.001413354","192.168.212.10","192.168.212.20","37150","80","HTTP","GET","/",,
+"6","0.021769205","192.168.212.20","192.168.212.10","80","37150","HTTP",,"/","200",
+"14","0.089102349","192.168.212.10","192.168.212.30","54106","502","Modbus/TCP",,,,"3"
+"16","0.117319342","192.168.212.30","192.168.212.10","502","54106","Modbus/TCP",,,,"3"
+"25","1.192526320","192.168.212.10","192.168.212.30","46034","502","Modbus/TCP",,,,"3"
+"27","1.196009450","192.168.212.30","192.168.212.10","502","46034","Modbus/TCP",,,,"3"
+"35","2.275659550","192.168.212.10","192.168.212.30","46040","502","Modbus/TCP",,,,"3"
+"37","2.281398619","192.168.212.30","192.168.212.10","502","46040","Modbus/TCP",,,,"3"
+"50","13.392125102","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"52","13.392665622","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"54","13.393354836","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"55","13.393432113","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"56","13.395216344","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"57","13.395351021","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"59","13.434137141","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"60","13.434248343","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"61","13.434724300","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"63","13.477699124","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"65","13.530084747","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"66","13.531844584","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"68","13.532831435","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"70","13.585110151","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"71","13.587672063","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"73","13.632945751","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"75","13.634489132","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"77","13.686798880","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"78","13.687814456","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"80","13.690477601","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"82","13.690866032","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"84","13.742792860","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"85","13.743499418","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"87","13.743922825","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"89","13.744351523","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"91","13.744833832","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"93","13.745447251","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"95","13.747505356","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"97","13.748142216","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"100","13.805227589","192.168.212.10","192.168.212.20","55468","23","TELNET",,,,
+"101","13.806299131","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"103","13.806775671","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+"105","13.807399039","192.168.212.20","192.168.212.10","23","55468","TELNET",,,,
+
+UTC 2026-11-12T16:38:40+00:00 COMANDO: bash /home/lorenzo/lab-plc/scripts/kali/Integridad.sh /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/comunicaciones.pcapng
+d33b57daa6af812c89638e4aaaac74c9a910f7a730d3ba5372326f81fa69d68c  original.evidencia
+75729913650b748c5889879b7e357d9a1759fd8f60f0ad37383b8b63305e48ec  copia-alterada.evidencia
+original.evidencia: OK
+copia-alterada.evidencia: OK
+Fecha UTC: 2026-11-12T16:38:40+00:00
+Fuente conservada: /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047/02-trafico/comunicaciones.pcapng
+Copia original coincide con fuente: SI
+Copia alterada tiene hash distinto: SI
+Resultados: /home/lorenzo/lab-plc/evidencias/04-integridad/20261112T163840Z-10974
+./00-preflight/direcciones.txt: OK
+./00-preflight/interfaces-captura.txt: OK
+./00-preflight/interfaces.json: OK
+./00-preflight/resultado.txt: OK
+./00-preflight/rutas-ipv4.txt: OK
+./00-preflight/rutas-ipv6.txt: OK
+./01-nmap/descubrimiento.gnmap: OK
+./01-nmap/descubrimiento.nmap: OK
+./01-nmap/descubrimiento.xml: OK
+./01-nmap/metasploitable.gnmap: OK
+./01-nmap/metasploitable.nmap: OK
+./01-nmap/metasploitable.xml: OK
+./01-nmap/plc.gnmap: OK
+./01-nmap/plc.nmap: OK
+./01-nmap/plc.xml: OK
+./02-trafico/comunicaciones.pcapng: OK
+./02-trafico/dumpcap.log: OK
+./02-trafico/http-body.html: OK
+./02-trafico/http-curl.log: OK
+./02-trafico/http-headers.txt: OK
+./02-trafico/jerarquia-protocolos.txt: OK
+./02-trafico/modbus-lecturas.txt: OK
+./02-trafico/paquetes.csv: OK
+./03-vulnerabilidad/ftp-anonimo.txt: OK
+./03-vulnerabilidad/telnet.txt: OK
+./04-integridad/resultado.txt: OK
+Abrir PCAP en Wireshark y capturar filtros http, modbus, tcp.port == 502 y telnet.
+EJECUCION TERMINADA: revisar evidencias y capturas GUI; no equivale a informe aprobado.
+Directorio de esta ejecucion: /home/lorenzo/lab-plc/evidencias/ejecuciones/20261112T163453Z-9047
