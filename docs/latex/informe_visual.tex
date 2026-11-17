@@ -13,6 +13,7 @@
 \setlength{\parskip}{5pt}
 \setlength{\emergencystretch}{3em}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 \setlist[enumerate]{leftmargin=*,itemsep=4pt,topsep=4pt}
 \newcommand{\captura}[3]{\begin{figure}[H]\centering\includegraphics[width=#1\linewidth]{#2}\caption{#3}\end{figure}}
 \newcommand{\pagina}[1]{\clearpage\section*{#1}}
@@ -33,24 +34,43 @@
 \end{enumerate}
 
 \captura{0.89}{arquitectura.png}{Arquitectura implementada: roles, IP y recursos asignados.}
-\textbf{Adaptación declarada.} Se utilizó VMware por elección del usuario; la guía del curso nombra VirtualBox. La equivalencia técnica no acredita aprobación docente de esa sustitución. ModbusPal se utilizó mediante su motor Java real, sin su GUI.
+\textbf{Simulación industrial.} ModbusPal 1.6b mantuvo cuatro registros de prueba y atendió las consultas Modbus TCP desde Kali.
 
 \pagina{1. Montaje del laboratorio: configuración y verificación}
 \begin{enumerate}[start=5]
 \item \textbf{Aislar y configurar la víctima.} Se importó el disco, se dejó un único adaptador VMnet1 y se asignaron 512 MB y 1 CPU. Se identificó la IP DHCP por su MAC, se configuró \texttt{192.168.212.20/24} y se detuvo DHCP. No se conectó esta VM a NAT ni a la red física.
-\item \textbf{Aprovisionar y aislar el PLC.} El Ubuntu limpio usó NAT temporal para instalar paquetes. Después se apagó, se cambió a VMnet1 y se fijó \texttt{192.168.212.30/24}, con 768 MB y 1 CPU. Una incidencia de nombre de interfaz se corrigió mediante coincidencia por MAC y nombre \texttt{ens33}.
+\item \textbf{Aprovisionar y aislar el PLC.} El Ubuntu limpio usó NAT temporal para instalar paquetes. Después se apagó, se cambió a VMnet1 y se fijó \texttt{192.168.212.30/24}, con 768 MB y 1 CPU. La interfaz \texttt{ens33} quedó asociada a su MAC para conservar la configuración tras reiniciar.
 \item \textbf{Habilitar la administración y el simulador.} Se instalaron claves SSH dedicadas. En el PLC se instaló ModbusPal 1.6b con un adaptador Java propio, como servicio \texttt{modbuspal-lab}; se comprobó TCP 502 y una lectura FC03. Se configuraron cuatro registros constantes: \texttt{[250,1000,1,750]}.
 \item \textbf{Comprobar antes de auditar.} Los tres VMX tenían un único adaptador host-only. Se verificaron las IP, las rutas directas y la ausencia de gateway en los invitados; se desactivó su reenvío IP. Kali quedó en \texttt{192.168.212.10/24}, con SSH y herramientas de captura disponibles.
 \end{enumerate}
 
 \captura{0.91}{00-kali-estado-ssh.png}{Estado real de Kali: dirección, rutas, reenvío desactivado y versiones de herramientas.}
-\textbf{Resultado del montaje.} La víctima y el PLC respondieron desde Kali. Solo se autorizó auditar \texttt{.20} y \texttt{.30}. La comprobación estática VMX se complementó con las rutas de los invitados; no se presenta como una auditoría completa de ICS en Windows.
+\textbf{Resultado del montaje.} La víctima y el PLC respondieron desde Kali. Solo se autorizó auditar \texttt{.20} y \texttt{.30}. Se comprobaron tanto la configuración de los adaptadores como las rutas de los invitados para mantener las pruebas en la red del laboratorio.
 
-\pagina{2. Actividad 1: reconocimiento de infraestructura}
+
+\pagina{2. Inventario de dispositivos, IP, puertos y servicios}
+\textbf{Paso 1: ubicar los roles.} Kali actuó como auditor; Metasploitable 2 fue la víctima y Ubuntu con ModbusPal simuló el PLC. Los equipos se comunicaron en \texttt{192.168.212.0/24}.
+
+\textbf{Paso 2: registrar los servicios identificados.} La tabla reúne los dispositivos y los resultados conservados. Todos los puertos indicados son TCP.
+
+{\small\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}P{2.7cm}P{2.7cm}P{3.1cm}Y@{}}\toprule
+\textbf{Dispositivo} & \textbf{Dirección IP} & \textbf{Puertos} & \textbf{Servicios identificados}\\\midrule
+Windows anfitrión & 192.168.212.1 & No sondeados & Administración de la red virtual; no fue blanco de la auditoría.\\
+Kali Linux (auditor) & 192.168.212.10 & 22, comprobado por SSH & SSH para administración; Nmap y Wireshark como herramientas cliente. No se realizó un inventario de sus demás puertos.\\
+Metasploitable 2 (víctima) & 192.168.212.20 & 30 abiertos; detalle completo en la tabla siguiente & FTP, SSH, Telnet, SMTP, DNS, HTTP, RPC, SMB, rsh, RMI, shell, NFS, MySQL, distccd, PostgreSQL, VNC, X11, IRC, AJP y DRb; cinco puertos sin identificar.\\
+Ubuntu + ModbusPal (PLC) & 192.168.212.30 & 22 y 502, ambos abiertos & SSH (OpenSSH 9.6p1) y Modbus TCP. La respuesta FC03 confirmó el servicio industrial.\\\bottomrule
+\end{tabularx}}
+
+\textbf{Paso 3: contrastar el reconocimiento.} Nmap identificó ambos blancos activos. Se exploraron todos los puertos TCP de la víctima y únicamente 22/502 del PLC; estos últimos no constituyen un sondeo completo del PLC.
+\captura{0.83}{01-nmap.png}{Reconocimiento Nmap: 30 puertos TCP abiertos y 65.505 cerrados en Metasploitable 2.}
+\textbf{Lectura de la captura.} La dirección identifica al dispositivo; las columnas PORT, STATE, SERVICE y VERSION relacionan los puertos abiertos con el servicio detectado. El inventario completo se presenta a continuación.
+
+\pagina{3. Actividad 1: puertos y servicios identificados}
 \textbf{Paso 1.} El descubrimiento identificó activos a \texttt{192.168.212.20} y \texttt{192.168.212.30}. \textbf{Paso 2.} Se exploraron los 65.535 puertos TCP de la víctima con detección ligera de versiones y scripts predeterminados; en el PLC solo se exploraron 22 y 502. \textbf{Paso 3.} Se relacionaron puertos, servicios y riesgos.
-\captura{0.81}{01-nmap.png}{Nmap registró 30 puertos TCP abiertos y 65.505 cerrados en la víctima.}
 
-{\fontsize{8}{9.5}\selectfont\setlength{\tabcolsep}{4pt}
+
+{\fontsize{9.5}{11.5}\selectfont\setlength{\tabcolsep}{4pt}
 \begin{tabularx}{\linewidth}{r Y r Y}
 \toprule
 \multicolumn{4}{l}{\textbf{Metasploitable 2 -- IP 192.168.212.20 -- todos los puertos de esta tabla son TCP}}\\
@@ -77,7 +97,10 @@
 \end{tabularx}}
 {\small Se conservan las etiquetas inciertas \texttt{login?}, \texttt{unknown} y \texttt{mbap?}. El banner no acredita por sí solo una vulnerabilidad explotable. La tabla recoge resultados de la ejecución original; los puertos dinámicos pueden variar en otra corrida. Kali \texttt{.10} fue el auditor, no un blanco de ese sondeo.}
 
-\pagina{3. Actividad 2: captura y análisis de comunicaciones}
+
+\textbf{Paso 4: seleccionar riesgos para las pruebas.} Telnet (23) permitió estudiar acceso con credenciales predeterminadas; HTTP (80) permitió observar información sin cifrar; Modbus (502) permitió examinar lecturas industriales sin autenticación. FTP anónimo y la configuración SMB complementaron el análisis. Los impactos y las medidas correspondientes se relacionan en la sección 8.
+
+\pagina{4. Actividad 2: captura y análisis de comunicaciones}
 \textbf{Paso 1: capturar.} Se inició dumpcap en \texttt{eth0} durante 90 segundos, limitado a tráfico que involucrara a \texttt{.20} o \texttt{.30}. Se conservaron \textbf{154 tramas}, con 0 descartes registrados en la interfaz.
 
 \textbf{Paso 2: reconocer TCP y HTTP.} Las tramas 1, 2 y 3 muestran SYN, SYN-ACK y ACK. La trama 4 contiene \texttt{GET /} desde \texttt{.10:37150} hacia \texttt{.20:80}; la trama 6 devuelve \texttt{200 OK}. El contenido HTTP es legible y no demuestra protección TLS.
@@ -86,7 +109,7 @@
 \textbf{Paso 3: reconocer Modbus TCP.} Kali \texttt{.10} leyó el PLC \texttt{.30:502}, unidad 1, función 03, dirección PDU inicial 0 y cantidad 4. Las tramas 14/16, 25/27 y 35/37 forman tres pares de petición/respuesta, con valores \texttt{[250,1000,1,750]}. Son datos simulados, no mediciones físicas. Se aplicaron los filtros \texttt{modbus} y \texttt{tcp.port == 502}.
 \captura{0.80}{03-modbus.png}{Tres intercambios Modbus FC03. No se probó escritura de registros.}
 
-\pagina{4. Actividad 3: investigación y prueba controlada}
+\pagina{5. Actividad 3: investigación y prueba controlada}
 \textbf{Paso 1: elegir una condición insegura.} El inventario mostró Telnet en TCP 23. Rapid7 documenta la credencial de laboratorio \texttt{msfadmin/msfadmin}; MITRE describe el riesgo de conservar credenciales predeterminadas en CWE-1392. Se investigó esa debilidad y la exposición en claro de Telnet, relacionada con CWE-319 [1--3].
 
 \textbf{Paso 2: ejecutar la prueba aislada.} Desde Kali se inició sesión únicamente en la víctima \texttt{192.168.212.20}. Se consultaron \texttt{id} y \texttt{uname -a}, y se cerró la conexión. La evidencia confirmó acceso como \texttt{uid=1000(msfadmin)}, no como root.
@@ -98,7 +121,7 @@
 
 \textbf{Mitigación propuesta.} Cambiar credenciales, retirar Telnet y FTP anónimo innecesarios y administrar por SSH. La corroboración posterior sería comprobar TCP 23 cerrado y rechazo de la credencial anterior. Estas medidas se proponen; no se aplicaron para conservar el laboratorio didáctico.
 
-\pagina{5. Actividad 4: integridad SHA-256}
+\pagina{6. Actividad 4: integridad SHA-256}
 \begin{enumerate}
 \item \textbf{Seleccionar y registrar.} Se eligió el PCAP de la actividad 2, de \textbf{20.940 bytes}. Se calculó SHA-256 y se preservó una copia original sin permiso de escritura como protección frente a accidentes.
 \item \textbf{Modificar solo una copia.} A otra copia se añadieron 39 bytes: un salto de línea, el texto \texttt{ALTERACION CONTROLADA DEL LABORATORIO} y otro salto de línea. La copia alterada quedó en \textbf{20.979 bytes}.
@@ -114,8 +137,8 @@ Copia alterada & {\ttfamily\footnotesize 75729913650b748c5889879b7e357d9a\newlin
 
 \textbf{Paso 4: explicar la integridad.} Un cambio en los bytes produjo un resumen diferente. El resultado \texttt{OK} para cada archivo significa que coincide con \emph{su propia entrada} del manifiesto, no que original y copia sean iguales. Se verificaron 26/26 entradas de la ejecución y 2/2 del ejercicio de integridad. Un hash aislado no demuestra autoría ni una cadena de custodia completa.
 
-\pagina{6. Revisión complementaria en FTK Imager}
-\textbf{Paso 1: incorporar la evidencia.} Se añadió la carpeta \texttt{02-trafico} mediante \emph{File / Add Evidence Item / Contents of a Folder}. FTK Imager 8.3.0.27 mostró la fuente en Evidence Tree. El usuario realizó los clics manualmente porque el control automático tenía un nivel de integridad Windows inferior.
+\pagina{7. Revisión complementaria en FTK Imager}
+\textbf{Paso 1: incorporar la evidencia.} Se añadió la carpeta \texttt{02-trafico} mediante \emph{File / Add Evidence Item / Contents of a Folder}. FTK Imager 8.3.0.27 mostró la fuente en Evidence Tree.
 \captura{0.9}{06-ftk-carpeta.jpg}{Carpeta de tráfico incorporada como Contents of Folder.}
 
 \textbf{Paso 2: inspeccionar el archivo.} Se expandió la carpeta y se seleccionó \texttt{comunicaciones.pcapng}. Se observaron tipo \emph{Regular File}, tamaño \textbf{20.940 bytes}, propiedades y vista hexadecimal.
@@ -123,7 +146,7 @@ Copia alterada & {\ttfamily\footnotesize 75729913650b748c5889879b7e357d9a\newlin
 
 \textbf{Paso 3: corroborar.} El SHA-256 posterior, calculado externamente con Get-FileHash, coincidió con el original. Ese cálculo no se atribuye a FTK. La revisión fue de archivos: no se creó un contenedor AD1 ni una imagen física. El análisis de protocolos se realizó con Wireshark.
 
-\pagina{7. Riesgos, recomendaciones y conclusiones}
+\pagina{8. Riesgos, recomendaciones y conclusiones}
 {\small\renewcommand{\arraystretch}{1.14}
 \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.3cm} Y Y@{}}\toprule
 \textbf{Condición observada} & \textbf{Impacto potencial y límite} & \textbf{Medida y forma de corroborar}\\\midrule
@@ -136,9 +159,9 @@ Firma SMB desactivada según Nmap & Posible manipulación de comunicaciones en u
 
 \textbf{Conclusión.} Se reconocieron dos blancos, se inventariaron sus servicios y se conservó tráfico HTTP, Modbus y Telnet. La prueba confirmó credenciales predeterminadas y los hashes permitieron detectar una alteración controlada. Los resultados respaldan reducir servicios, gestionar credenciales y proteger las comunicaciones industriales.
 
-\textbf{Correspondencia de entregables.} Diagrama: sección 1; tabla y Nmap: sección 2; Wireshark: sección 3; prueba y fuentes: sección 4; SHA-256: sección 5; FTK: sección 6; cinco riesgos, recomendaciones y conclusiones: sección 7. La matriz completa por subítem está en \texttt{docs/MATRIZ\_CUMPLIMIENTO.md}.
+{\raggedright\textbf{Correspondencia de entregables.} Diagrama: sección 1; dispositivos y Nmap: secciones 2--3; Wireshark: sección 4; prueba y fuentes: sección 5; SHA-256: sección 6; FTK: sección 7; cinco riesgos, recomendaciones y conclusiones: sección 8. La matriz completa por subítem está en \texttt{docs/MATRIZ\_CUMPLIMIENTO.md}.\par}
 
-\textbf{Límites.} VMware sustituyó a VirtualBox sin aprobación docente acreditada. Se usó el motor real ModbusPal sin su GUI. Host-only incluye al anfitrión. Las mitigaciones no fueron aplicadas; son propuestas. La práctica se ejecutó el 12 de noviembre; esta revisión del 16 de noviembre amplía la documentación sin repetir ataques ni inventar resultados.
+\textbf{Alcance de los resultados.} Se evaluaron equipos simulados en una red host-only que incluye al anfitrión. Las lecturas Modbus fueron de registros de prueba; no se ensayó escritura ni se validó un PLC físico. Las mitigaciones son recomendaciones para una infraestructura protegida.
 
 \textbf{Referencias de investigación.}\par
 {\footnotesize\raggedright
@@ -146,5 +169,5 @@ Firma SMB desactivada según Nmap & Posible manipulación de comunicaciones en u
 [2] MITRE, \href{https://cwe.mitre.org/data/definitions/1392.html}{CWE-1392: Use of Default Credentials}.\par
 [3] MITRE, \href{https://cwe.mitre.org/data/definitions/319.html}{CWE-319: Cleartext Transmission of Sensitive Information}.\par
 [4] Nmap, \href{https://nmap.org/nsedoc/scripts/ftp-anon.html}{Documentación oficial del script ftp-anon}.\par
-Fuente académica: guía de la Universidad Santo Tomás suministrada para la práctica. Evidencias: ejecución \texttt{20261112T163453Z-9047}. Las capturas Kali muestran aplicaciones reales en Xvfb por SSH; las de FTK corresponden a Windows. Los comandos reproducibles se documentan en el README del repositorio privado.\par}
+Fuente académica: guía de la Universidad Santo Tomás suministrada para la práctica. Evidencias: ejecución \texttt{20261112T163453Z-9047}. Los comandos reproducibles se documentan en el README del repositorio privado.\par}
 \end{document}

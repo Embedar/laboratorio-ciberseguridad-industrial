@@ -4,13 +4,13 @@ Práctica ejecutada el **12 de noviembre de 2026**, de 11:34:53 a 11:38:40, hora
 
 Curso: Ciberseguridad en la Industria, Universidad Santo Tomás. Docente: John Monzaide Alvarez Cely. Fuente académica: `C:\Users\Lorenzo\Downloads\Práctica_Ciberseguridad.pdf`, secciones 4 a 10.
 
-**Estado FTK:** carpeta incorporada y PCAP inspeccionado, con propiedades y bytes observados y capturas conservadas. No se ha adquirido una imagen AD1. La actividad 4 de hashes sí se ejecutó sobre una evidencia real. Tampoco consta aceptación docente de VMware como sustituto de VirtualBox.
+**Estado FTK:** carpeta incorporada y PCAP inspeccionado, con propiedades y bytes observados y capturas conservadas. No se ha adquirido una imagen AD1. La actividad 4 de hashes sí se ejecutó sobre una evidencia real.
 
 ## 1. Objetivo, alcance y metodología
 
 Se reconocieron servicios de dos máquinas autorizadas, se analizaron comunicaciones TCP, HTTP y Modbus TCP, se probaron credenciales predeterminadas por Telnet y acceso FTP anónimo, y se verificó la integridad de la evidencia capturada. No se realizaron pruebas contra la red física, Internet ni dispositivos industriales reales.
 
-VMware Workstation **26.0.0 build-25388281** administra el laboratorio sobre Windows 11 Home. Se reutilizó la VM Kali del usuario y se incorporaron una VM Metasploitable 2 y una VM Linux PLC. La administración se realizó mediante herramientas locales de VMware y SSH; SSH pertenece al sistema invitado, no es el protocolo de creación de VMs. El diagnóstico de Kali acredita su servicio SSH activo. La guía académica cita VirtualBox; esta implementación conserva los roles mediante VMware por petición del usuario y declara la desviación sin atribuirle aprobación académica.
+VMware Workstation **26.0.0 build-25388281** administra el laboratorio sobre Windows 11 Home. Se reutilizó la VM Kali del usuario y se incorporaron una VM Metasploitable 2 y una VM Linux PLC. La administración se realizó mediante herramientas locales de VMware y SSH; SSH pertenece al sistema invitado, no es el protocolo de creación de VMs. El diagnóstico de Kali acredita su servicio SSH activo.
 
 Se ejecutó `scripts/kali/Ejecutar-practica.sh eth0`. Su comprobación previa exige dirección `.10/24`, rutas directas a `.20/.30`, ausencia de rutas por defecto IPv4/IPv6 y reenvío desactivado. El verificador estático de los tres VMX registró un único adaptador host-only antes de las pruebas. Esa comprobación estática no sustituye revisar rutas e interfaces de cada invitado ni demuestra por sí sola ausencia absoluta de ICS en Windows.
 
@@ -29,7 +29,7 @@ La actividad se realizó el **12 de noviembre de 2026**; esta síntesis se revis
 7. Se verificaron VMX, rutas e interfaces y se ejecutó la auditoría acotada: Nmap, captura real, HTTP, lectura FC03, Telnet, FTP y comparación SHA-256 de evidencia original/copia.
 8. Se exportaron y verificaron las evidencias, se generaron vistas Kali reales mediante Xvfb por SSH y se incorporó/inspeccionó el PCAP en FTK Windows, sin crear AD1 y sin atribuir a FTK el hash calculado externamente.
 
-La única desviación formal de herramienta es VirtualBox→VMware, declarada sin aceptación docente acreditada. ModbusPal se utilizó realmente, con ejecución headless; la guía no exige expresamente su ventana GUI. Las rutas de evidencia y los límites de aislamiento se detallan en las secciones siguientes.
+ModbusPal generó las respuestas industriales registradas. Las rutas de evidencia y el alcance de las pruebas se detallan en las secciones siguientes.
 
 ## 2. Diagrama e inventario de infraestructura
 
@@ -48,12 +48,13 @@ flowchart TB
     L --- P
 ```
 
-| Dispositivo | Dirección | Función y evidencia |
-|---|---|---|
-| Windows anfitrión | 192.168.212.1/24 | Administración de VMnet1; acceso al anfitrión permitido por host-only |
-| Kali | 192.168.212.10/24 | Única interfaz operativa con IPv4 global: `eth0`, MAC `00:0c:29:72:1e:8e`; preflight conservado |
-| Metasploitable 2 | 192.168.212.20/24 | Nmap: activo, MAC `00:0c:29:7a:2f:b5`; Telnet confirma `metasploitable` y kernel 2.6.24-16-server i686 |
-| PLC | 192.168.212.30/24 | Nmap: activo, MAC `00:50:56:22:00:30`; registro local y lectura Modbus confirman simulador |
+| Dispositivo | Dirección IP | Puertos TCP identificados | Servicios y función |
+|---|---|---|---|
+| Windows anfitrión | 192.168.212.1/24 | No sondeados | Administración de la red virtual; fuera de los blancos |
+| Kali (auditor) | 192.168.212.10/24 | 22 comprobado mediante SSH; no inventariado con Nmap | SSH administrativo; clientes de auditoría Nmap, Wireshark y Modbus |
+| Metasploitable 2 | 192.168.212.20/24 | 21,22,23,25,53,80,111,139,445,512,513,514,1099,1524,2049,2121,3306,3632,5432,5900,6000,6667,6697,8009,8180,8787,33888,35537,51252,55144 | FTP, SSH, Telnet, SMTP, DNS, HTTP, RPC, SMB, rsh, RMI, shell, NFS, MySQL, distccd, PostgreSQL, VNC, X11, IRC, AJP, DRb y cinco puertos unknown. La sección 3 empareja cada puerto y servicio |
+| Ubuntu + ModbusPal (PLC) | 192.168.212.30/24 | 22 y 502; solo se sondearon estos puertos | SSH (OpenSSH 9.6p1) y Modbus TCP confirmado por FC03 |
+
 
 Kali conserva `docker0` con `172.17.0.1/16` en estado **DOWN**, sin portadora; no se utilizó para las pruebas y no se modificó Docker. Las rutas conservadas no muestran ruta por defecto en Kali. Host-only incluye al anfitrión y no ofrece aislamiento frente a este. El servicio NAT de VMware instalado en Windows no implica que estas VMs tengan un adaptador NAT: los VMX revisados registran host-only.
 
@@ -200,7 +201,7 @@ El ejercicio ilustra detección de cambios respecto a una referencia confiable. 
 
 ### Estado de FTK Imager
 
-`evidencias/05-ftk/registro-incorporacion.json` y la captura `06-ftk-carpeta.jpg` acreditan la incorporación manual de la carpeta `02-trafico` en **FTK Imager 8.3.0.27**, observada en Evidence Tree con tipo **Contents of Folder**. El SHA-256 del PCAP se volvió a calcular externamente mediante Get-FileHash y coincide con el original. Esta comprobación no se atribuye al motor de FTK. La inspección visual del PCAP también se completó: se observó comunicaciones.pcapng seleccionado, de tipo Regular File, con tamaño 20.940 bytes y vista hexadecimal. Lo acreditan registro-inspeccion.json y 07-ftk-inspeccion.jpg; **no se creó ni se acredita un contenedor AD1**. La actividad 4 de hashes ya está completada. Si el docente exige un contenedor forense, esa adquisición es un complemento diferente de la incorporación de carpeta.
+`evidencias/05-ftk/registro-incorporacion.json` y la captura `06-ftk-carpeta.jpg` acreditan la incorporación de la carpeta `02-trafico` en **FTK Imager 8.3.0.27**, observada en Evidence Tree con tipo **Contents of Folder**. El SHA-256 del PCAP se volvió a calcular externamente mediante Get-FileHash y coincide con el original. Esta comprobación no se atribuye al motor de FTK. La inspección visual del PCAP también se completó: se observó comunicaciones.pcapng seleccionado, de tipo Regular File, con tamaño 20.940 bytes y vista hexadecimal. Lo acreditan registro-inspeccion.json y 07-ftk-inspeccion.jpg; **no se creó ni se acredita un contenedor AD1**. La actividad 4 de hashes ya está completada. Si el docente exige un contenedor forense, esa adquisición es un complemento diferente de la incorporación de carpeta.
 
 ## 7. Riesgos respaldados y recomendaciones
 
@@ -222,7 +223,7 @@ El laboratorio permitió reconocer dos blancos, inventariar 30 puertos de la ví
 
 La comparación SHA-256 demostró que el original coincide con el PCAP y que añadir contenido a una copia cambia su resumen. La verificación después de exportar a Windows confirmó las entradas de ambos manifiestos. Estos resultados sustentan recomendaciones de segmentación, reducción de servicios, gestión de credenciales y protección de comunicaciones.
 
-La práctica acredita un laboratorio simulado; no valida seguridad de PLC físicos, no cubre UDP ni todos los puertos del PLC, no explota CVE, no adquiere imagen AD1 y no equivale a aprobación docente. La configuración VMware y el uso de ModbusPal sin GUI deben declararse al presentar la entrega.
+La práctica acredita un laboratorio simulado; no valida seguridad de PLC físicos, no cubre UDP ni todos los puertos del PLC, no explota CVE, no adquiere imagen AD1 y no equivale a aprobación docente.
 
 ## 9. Índice de evidencias y cobertura de entregables
 
@@ -247,7 +248,7 @@ Rúbrica de la guía: reconocimiento 20%; comunicaciones 20%; vulnerabilidades 2
 ## 10. Fuentes y límites de atribución
 
 - Guía académica local citada al inicio, páginas del PDF 3 a 7: infraestructura, actividades, entregables y criterios.
-- [Rapid7: Metasploitable 2](https://docs.rapid7.com/metasploit/metasploitable-2/): carácter intencionalmente vulnerable, compatibilidad con VMware/VirtualBox y credenciales predeterminadas. Las observaciones de esta práctica provienen de sus propios logs y paquetes.
+- [Rapid7: Metasploitable 2](https://docs.rapid7.com/metasploit/metasploitable-2/): carácter intencionalmente vulnerable, entorno de práctica y credenciales predeterminadas. Las observaciones de esta práctica provienen de sus propios logs y paquetes.
 - [Kali: VMware como invitado](https://www.kali.org/docs/virtualization/install-vmware-guest-vm/): contexto de virtualización.
 - [Broadcom: API de VMware Workstation](https://developer.broadcom.com/xapis/vmware-workstation-pro-api/latest/): interfaz de administración del hipervisor; no confundirla con SSH del invitado.
 - [ModbusPal 1.6b, distribución del proyecto](https://sourceforge.net/projects/modbuspal/files/modbuspal/RC%20version%201.6b/) y [ejecución sin GUI, ayuda upstream](https://github.com/zeelos/ModbusPal/blob/master/src/main/java/modbuspal/help/embed-nogui.html): motor del simulador y adaptación sin escritorio; el adaptador local usa la API binaria de 1.6b inspeccionada.
@@ -281,7 +282,7 @@ Integridad del PCAP original y de la copia alterada:
 ![SHA-256](../evidencias/capturas/05-integridad.png)
 
 
-Incorporación manual de la carpeta en FTK, observada después del primer cierre del informe:
+Incorporación de la carpeta en FTK, observada después del primer cierre del informe:
 
 ![Carpeta incorporada en FTK](../evidencias/capturas/06-ftk-carpeta.jpg)
 

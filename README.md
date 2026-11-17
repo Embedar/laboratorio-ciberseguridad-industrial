@@ -4,7 +4,9 @@ Guía reproducible para un laboratorio **local y aislado** con Kali, Metasploita
 
 **Lectura del resultado:** [informe PDF paso a paso](docs/latex/informe_visual.pdf), [fuente LaTeX](docs/latex/informe_visual.tex), [informe técnico ampliado](docs/INFORME_TECNICO.md) y [matriz por cada requisito](docs/MATRIZ_CUMPLIMIENTO.md).
 
-La guía académica menciona VirtualBox. Aquí se utiliza VMware por elección del autor: se declara la adaptación, sin atribuirle aprobación docente. ModbusPal funciona mediante su biblioteca Java real con un adaptador propio sin escritorio. Los valores del PLC son simulados, no mediciones físicas.
+ModbusPal funciona mediante su biblioteca Java real con un adaptador propio sin escritorio. Los valores del PLC son simulados, no mediciones físicas.
+
+**Entorno ya montado:** usa [comandos rápidos de comprobación](docs/COMANDOS_RAPIDOS.md), sin repetir la instalación.
 
 ## Qué contiene y qué no contiene el repositorio
 

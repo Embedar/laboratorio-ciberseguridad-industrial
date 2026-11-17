@@ -4,8 +4,8 @@ Revisión del16/11/2026. La auditoría del laboratorio corresponde al12/11/2026;
 
 | Comprobación | Resultado |
 |---|---|
-| Cotejo académico |22subítems y9entregables relacionados con evidencia y sección/página en MATRIZ_CUMPLIMIENTO.md |
-| PDF LaTeX |8páginas,9imágenes; compilación pdfLaTeX en dos pasadas, sin avisos de desbordamiento; páginas renderizadas y revisadas visualmente |
+| Cotejo académico |22subítems,9entregables y5criterios de evaluación relacionados con evidencia y sección/página en MATRIZ_CUMPLIMIENTO.md |
+| PDF LaTeX |9páginas,9imágenes; compilación pdfLaTeX en dos pasadas, sin avisos de desbordamiento; páginas renderizadas y revisadas visualmente |
 | Evidencias de referencia |26/26 hashes de ejecución y2/2 de integridad correctos;7capturas principales presentes y con formato válido |
 | Clonación desde GitHub |El repositorio privado publicado se clonó de nuevo; commit coincidente y35/35 comprobaciones correctas, sin config/descargas/vms/fuentes |
 | Exportación del índice Git |Se creó una carpeta temporal exclusivamente con los archivos preparados;35/35 comprobaciones de evidencia pasaron también allí |
@@ -23,7 +23,13 @@ Las evidencias se marcan -text en .gitattributes para conservar sus bytes y hash
 
 El montaje funcional y sus comunicaciones se validaron en la corrida original. Las mejoras de bootstrap se comprobaron con sintaxis, fixtures, exportación limpia y compilación, pero no se reinstaló un juego completo de VMs nuevas desde cero el16/11/2026. Por tanto no se presenta esa instalación nueva como ejecutada.
 
-La tabla de servicios conserva incertidumbres de Nmap. No se atribuye explotación de CVE, escrituraModbus, extracciónFTP, adquisiciónAD1 ni aplicación de mitigaciones no realizadas. La equivalencia VMware/VirtualBox está declarada; la aceptación docente no está acreditada.
+La tabla de servicios conserva incertidumbres de Nmap. No se atribuye explotación de CVE, escrituraModbus, extracciónFTP, adquisiciónAD1 ni aplicación de mitigaciones no realizadas.
 
 Para verificar los artefactos incluidos: `python scripts/windows/Verificar-Evidencias.py`. Antes de un commit: `python scripts/windows/Validar-Publicacion.py --staged`. Consultar el README para repetir la práctica en una corrida nueva y registrar sus propios resultados.
 
+
+## Revisión del informe y guía de comprobación
+
+Se añadieron la tabla explícita dispositivo/IP/puertos/servicios y el inventario completo adyacente; se retiraron las notas de operación del control del computador. La matriz conserva los cinco criterios con su ponderación y ubicación de evidencias. El PDF final de nueve páginas se compiló en dos pasadas sin avisos Overfull/Underfull, se renderizó y se revisaron sus nueve páginas. Se comprobaron ambos SHA-256 completos dentro del PDF.
+
+La nueva docs/COMANDOS_RAPIDOS.md separa consulta de evidencias conservadas y repetición con carpetas nuevas para el entorno instalado. Sus cinco bloques Bash pasaron bash -n y sus cinco bloques PowerShell pasaron el Parser. Se comprobaron los enlaces locales añadidos. Las evidencias originales siguen verificando35/35. No se encendieron las VMs ni se repitieron sondeos durante esta revisión documental; estos controles de sintaxis no se presentan como una nueva ejecución de red.
