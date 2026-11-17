@@ -53,3 +53,10 @@ id_ed25519*
 !/evidencias/capturas/06-ftk-carpeta.jpg
 !/evidencias/capturas/07-ftk-inspeccion.jpg
 
+
+# Demostracion revisada del17/11/2026
+!/evidencias/sustentaciones/
+/evidencias/sustentaciones/*
+!/evidencias/sustentaciones/20261117T124816Z-27489/
+/evidencias/sustentaciones/20261117T124816Z-27489/ui/
+/evidencias/sustentaciones/20261117T124816Z-27489/04-trafico/captura.pid

@@ -1,5 +1,7 @@
 # Comprobación rápida del laboratorio ya instalado
 
+Para exponer en el orden del informe: [guion de sustentación](SUSTENTACION_PASO_A_PASO.md). La sección 2 de este archivo consulta la corrida original; la demostración nueva se comprueba con `python scripts/windows/Verificar-Sustentacion.py`.
+
 Para el entorno existente: Kali `192.168.212.10`, víctima `192.168.212.20` y PLC ModbusPal `192.168.212.30`. No reinstala ni cambia la configuración. Ejecutar los bloques en el orden indicado. Las comprobaciones de red se limitan a estos dos blancos del laboratorio.
 
 Si necesitas entender qué demuestra Telnet y de dónde salen las tramas, lee primero [actividad3 explicada](ACTIVIDAD_3_EXPLICADA.md).

@@ -1,0 +1,4 @@
+# Nmap 7.99 scan initiated Tue Nov 17 07:50:14 2026 as: /usr/lib/nmap/nmap --privileged -n -sT -sV --version-light -p 22,502 -oA /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/03-nmap/plc 192.168.212.30
+Host: 192.168.212.30 ()	Status: Up
+Host: 192.168.212.30 ()	Ports: 22/open/tcp//ssh//OpenSSH 9.6p1 Ubuntu 3ubuntu13.20 (Ubuntu Linux; protocol 2.0)/, 502/open/tcp//mbap?///
+# Nmap done at Tue Nov 17 07:50:36 2026 -- 1 IP address (1 host up) scanned in 21.48 seconds

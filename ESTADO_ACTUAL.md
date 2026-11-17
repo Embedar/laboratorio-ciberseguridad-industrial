@@ -1,33 +1,9 @@
-# Estado del laboratorio y documentación
+# Estado del laboratorio
 
-## Configuración y práctica de referencia
+Actualización17/11/2026. Las tres VMs existentes se encendieron para generar las nuevas capturas. Se comprobó host-only y rutas de invitados; Kali tenía forwarding 1 al arrancar y se desactivó antes de los sondeos. Revisarlo de nuevo al reiniciar.
 
-Actividad real del12/11/2026: Kali.10 (4096MB/2CPU), Metasploitable2.20 (512MB/1CPU), Ubuntu/ModbusPal.30 (768MB/1CPU), red host-onlyVMnet1 192.168.212.0/24. Se verificaron SSH, rutas sin gateway, forwarding0 y FC03. Consulta del16/11/2026: las VMs estaban apagadas; esta revisión no vuelve a ejecutar las pruebas de red.
+Corrida vigente:`20261117T124816Z-27489`. Dos blancos activos;30 puertos TCP abiertos en la víctima;22/502 examinados en el PLC; HTTP 200 y 3 lecturas FC03 [250,1000,1,750]. Telnet confirmó uid 1000 (msfadmin); el PCAP de la sesión conserva sus datos. La fuente HTTP/Modbus tiene5836bytes y la copia alterada5875.
 
-Las cuatro actividades yFTK están acreditadas por la corrida20261112T163453Z-9047, sus manifiestos, capturas y la inspección delPCAP. Resultados:30puertosTCP víctima; PLC22/502;154tramas/20940bytes;HTTP200;registros250,1000,1,750;Telnet con credencial sintética yFTP anónimo vacío.
+22 capturas nuevas; informe ordenado en nueve apartados,19 páginas y25 imágenes (diagrama,22 capturas nuevas y2 capturas FTK originales señaladas). Guion docs/SUSTENTACION_PASO_A_PASO.md. Verificador nuevo95/95; original35/35. Las evidencias previas se conservan separadas.
 
-## Revisión del16/11/2026
-
-- PDF ampliado a9páginas y9imágenes, con montaje en8pasos y explicación de cada actividad.
-- Tabla completa de puertos/servicios, TCP/origen-destino, investigación primaria, hashes completos y cinco riesgos con mitigación.
-- docs/MATRIZ_CUMPLIMIENTO.md:22subítems y9entregables cotejados con evidencias y páginas.
-- README: montaje desde clon nuevo y comandos por etapa; configuración local y huellas antes de autenticación.
-- Correcciones de fuentes: directorios iniciales, rutas/usuario parametrizados, aliasSSH, compilación del wrapper, readinessFC03 y capturas de la corrida indicada.
-- Validados parsers/sintaxis, fixtures sin red y autoprueba Java sin sockets. Las35 comprobaciones de evidencias originales siguen correctas (28hashes y7formatos de imagen). No se repitió la instalación completa en nuevasVMs.
-
-## Publicación
-
-Repositorio publicado y verificado el16/11/2026: privado, cuenta personal Embedar, rama main: https://github.com/Embedar/laboratorio-ciberseguridad-industrial . Se clonó desde GitHub y35/35 comprobaciones de evidencia pasaron, sin carpetas privadas locales. Se publica únicamente documentación/fuentes propias y evidencias revisadas. Configuración privada, claves, discos, dependencias, programas de terceros y PDF académico original quedan fuera del índiceGit.
-
-ModbusPal usa su motor real sin GUI; no se creóAD1. Las mitigaciones están propuestas, no aplicadas a la víctima.
-
-## Continuación
-
-Leer README.md para montar/repetir; docs/INFORME_TECNICO.md para detalle, docs/latex/informe_visual.pdf para lectura y docs/MATRIZ_CUMPLIMIENTO.md para cotejar requisitos. La carpeta del robotSTM32 y su firmware no se modificaron.
-
-
-Actualización: tabla explícita dispositivo/IP/puertos/servicios en el PDF, matriz de los cinco criterios y guía docs/COMANDOS_RAPIDOS.md para el entorno instalado.
-
-## Ampliación didáctica del17/11/2026
-
-Informe de13páginas y9imágenes; conceptos previos en pág.5 y actividad3 en págs.8–10. Se explican TCP/puertos, PCAPNG/tramas, Telnet, Rapid7/MITRE y CWE/CVE; cada captura tiene lectura e interpretación. Nueva guía docs/ACTIVIDAD_3_EXPLICADA.md, también integrada en el informe técnico. Relectura offline del PCAP original con TShark: las tramas65/70 contienen la credencial pública,77/84/100 los comandos id/uname/exit; sin nuevas conexiones a la víctima.
+Los discos,claves,configuración privada,dependencias y registros UI de diagnóstico no se publican. El repositorio privado continúa en https://github.com/Embedar/laboratorio-ciberseguridad-industrial . El proyecto del robot no se modificó.

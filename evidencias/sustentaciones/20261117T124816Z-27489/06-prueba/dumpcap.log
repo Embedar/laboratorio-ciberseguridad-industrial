@@ -1,0 +1,4 @@
+Capturing on 'eth0'
+File: /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/06-prueba/telnet.pcapng
+Packets: 1 Packets: 3 Packets: 4 Packets: 16 Packets: 28 Packets: 32 Packets: 35 Packets: 36 Packets: 59 Packets: 60 Packets: 81 Packets: 82 Packets: 96 Packets captured: 96
+Packets received/dropped on interface 'eth0': 96/0 (pcap:0/dumpcap:0/flushed:0/ps_ifdrop:0) (100.0%)

@@ -1,0 +1,7 @@
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0             UP             192.168.212.10/24 
+docker0          DOWN           172.17.0.1/16 
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown 
+192.168.212.0/24 dev eth0 proto kernel scope link src 192.168.212.10 metric 100 
+net.ipv4.ip_forward = 0
+net.ipv6.conf.all.forwarding = 0

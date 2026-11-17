@@ -1,0 +1,4 @@
+Capturing on 'eth0'
+File: /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/04-trafico/comunicaciones.pcapng
+Packets: 1 Packets: 10 Packets: 11 Packets: 21 Packets: 40 Packets: 41 Packets: 42 Packets captured: 42
+Packets received/dropped on interface 'eth0': 42/0 (pcap:0/dumpcap:0/flushed:0/ps_ifdrop:0) (100.0%)

@@ -1,0 +1,7 @@
+frame.number	ip.src	ip.dst	modbus.func_code	_ws.col.info
+14	192.168.212.10	192.168.212.30	3	   Query: Trans: 48248; Unit:   1, Func:   3: Read Holding Registers
+16	192.168.212.30	192.168.212.10	3	Response: Trans: 48248; Unit:   1, Func:   3: Read Holding Registers
+24	192.168.212.10	192.168.212.30	3	   Query: Trans: 19096; Unit:   1, Func:   3: Read Holding Registers
+26	192.168.212.30	192.168.212.10	3	Response: Trans: 19096; Unit:   1, Func:   3: Read Holding Registers
+34	192.168.212.10	192.168.212.30	3	   Query: Trans: 40625; Unit:   1, Func:   3: Read Holding Registers
+36	192.168.212.30	192.168.212.10	3	Response: Trans: 40625; Unit:   1, Func:   3: Read Holding Registers

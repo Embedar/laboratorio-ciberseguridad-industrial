@@ -1,0 +1,3 @@
+original.evidencia: OK
+copia-alterada.evidencia: OK
+Fuente conservada; copias diferentes; ambos hashes registrados.

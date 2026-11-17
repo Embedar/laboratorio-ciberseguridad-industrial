@@ -1,0 +1,3 @@
+frame.number	ip.src	ip.dst	http.request.method	http.request.uri	http.response.code
+4	192.168.212.10	192.168.212.20	GET	/	
+6	192.168.212.20	192.168.212.10		/	200

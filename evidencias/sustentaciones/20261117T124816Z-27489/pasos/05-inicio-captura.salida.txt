@@ -1,0 +1,2 @@
+Capturing on 'eth0'
+File: /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/04-trafico/comunicaciones.pcapng

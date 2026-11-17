@@ -1,0 +1,3 @@
+Capturas reales de aplicaciones durante ejecucion nueva.
+UTC: 2026-11-17T13:06:13+00:00
+Corrida: /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489

@@ -1,0 +1,8 @@
+# Nmap 7.99 scan initiated Tue Nov 17 07:48:23 2026 as: /usr/lib/nmap/nmap --privileged -n -sn -PS22,502 -oA /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/03-nmap/descubrimiento 192.168.212.20 192.168.212.30
+Nmap scan report for 192.168.212.20
+Host is up (0.00062s latency).
+MAC Address: 00:0C:29:7A:2F:B5 (VMware)
+Nmap scan report for 192.168.212.30
+Host is up (0.0016s latency).
+MAC Address: 00:50:56:22:00:30 (VMware)
+# Nmap done at Tue Nov 17 07:48:23 2026 -- 2 IP addresses (2 hosts up) scanned in 0.18 seconds

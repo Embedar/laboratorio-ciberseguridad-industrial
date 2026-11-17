@@ -2,6 +2,8 @@
 
 Guía reproducible para un laboratorio **local y aislado** con Kali, Metasploitable 2 y el motor real de ModbusPal. La práctica de referencia se ejecutó el **12 de noviembre de 2026**; esta documentación se revisó el **17 de noviembre**.
 
+**Sustentación comando a comando:** [guion ordenado](docs/SUSTENTACION_PASO_A_PASO.md).
+
 **Lectura del resultado:** [informe PDF paso a paso](docs/latex/informe_visual.pdf), [fuente LaTeX](docs/latex/informe_visual.tex), [informe técnico ampliado](docs/INFORME_TECNICO.md) y [matriz por cada requisito](docs/MATRIZ_CUMPLIMIENTO.md).
 
 ModbusPal funciona mediante su biblioteca Java real con un adaptador propio sin escritorio. Los valores del PLC son simulados, no mediciones físicas.
@@ -395,7 +397,7 @@ git push origin main
 ## Resultado de la ejecución incluida
 
 - Dos blancos activos, 30 puertos TCP abiertos en la víctima y 22/502 comprobados en el PLC.
-- PCAP de 154 tramas y20.940 bytes; HTTP200, tres intercambiosFC03 y registros `[250,1000,1,750]`.
+- PCAP de 154 tramas y20.940 bytes; HTTP 200, tres intercambiosFC03 y registros `[250,1000,1,750]`.
 - Acceso Telnet como msfadmin y FTP anónimo con listado vacío.
 - PCAP/original: `d33b57daa6af812c89638e4aaaac74c9a910f7a730d3ba5372326f81fa69d68c`.
 - Copia alterada: `75729913650b748c5889879b7e357d9a1759fd8f60f0ad37383b8b63305e48ec`.
@@ -409,10 +411,20 @@ git push origin main
 | Huella distinta | Detener la autenticación y comparar con la consola de la VM antes de sustituir una entrada |
 | PLC pierde IP tras reinicio | Match por MAC y nombre persistente de interfaz en netplan; usar el finalizador corregido |
 | Captura denegada | Grupo wireshark, nueva sesión y `dumpcap -D`; no ejecutar toda la práctica como root |
-| Preflight bloqueado | IP `.10`, ausencia de default/IPv6 global, forwarding0 y único adaptador host-only |
+| Preflight bloqueado | IP `.10`, ausencia de default/IPv6 global, forwarding 0 y único adaptador host-only |
 | Puerto502 abierto pero lectura falla | Servicio, unit1/FC03/dirección0/cantidad4 y logs de ModbusPal |
 | Se intenta repetir la creación | Los creadores rechazan una VM existente; no borrar discos para resolverlo. Usar otro entorno y planificar IP/MAC únicas |
 
 La guía no requiere modificar el firmware ni los archivos del robot STM32. Para apagar ordenadamente cada VM, entrar con su helper SSH y ejecutar `sudo shutdown -h now`.
 
 
+
+## Demostración nueva del 17/11/2026
+
+El informe vigente sigue los nueve títulos de la guía. Se ejecutó otra demostración en `evidencias/sustentaciones/20261117T124816Z-27489/`:22 capturas nuevas, PCAPHTTP/Modbus separado de Telnet, transcripción de sesión y comparación SHA-256. El guion de sustentación presenta una orden, el resultado que observar y una frase breve para explicarlo.
+
+```powershell
+python .\scripts\windows\Verificar-Sustentacion.py
+```
+
+Resultado verificado:95/95 comprobaciones. La corrida del 12/11 permanece separada y conserva su verificador original. Para automatizar nuevas capturas gráficas: `dbus-run-session -- xvfb-run -a -s '-screen 0 1400x1000x24 -nolisten tcp' bash ~/lab-plc/scripts/kali/Capturar-Sustentacion.sh` en Kali, después de revisar aislamiento y transferir los scripts actualizados. El programa tarda varios minutos y exige forwarding 0 antes de empezar.

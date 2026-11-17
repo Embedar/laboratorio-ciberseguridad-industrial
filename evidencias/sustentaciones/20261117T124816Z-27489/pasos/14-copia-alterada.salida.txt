@@ -1,0 +1,5 @@
+ 5875 /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/07-integridad/copia-alterada.evidencia
+ 5836 /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/07-integridad/original.evidencia
+11711 total
+23713f15a41b2f1181aff11d0126841952193ddd3cd42021a5c039601dd8b12d  /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/07-integridad/copia-alterada.evidencia
+07e25cbcf2ff5ed1130c93ce8af38aab6e87d0db7c7f6b4684631410694b13f3  /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/07-integridad/original.evidencia

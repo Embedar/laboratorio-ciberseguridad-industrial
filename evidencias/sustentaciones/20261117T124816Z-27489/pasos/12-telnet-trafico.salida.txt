@@ -1,0 +1,9 @@
+STREAM TCP: 0
+Datos de Kali .10 hacia la victima .20:23, reconstruidos como texto:
+msfadmin
+msfadmin
+clear; id
+uname -a
+exit
+
+Lectura del archivo conservado; no se abrio una conexion de red.

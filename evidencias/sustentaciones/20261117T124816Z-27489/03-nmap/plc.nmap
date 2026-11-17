@@ -1,0 +1,12 @@
+# Nmap 7.99 scan initiated Tue Nov 17 07:50:14 2026 as: /usr/lib/nmap/nmap --privileged -n -sT -sV --version-light -p 22,502 -oA /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/03-nmap/plc 192.168.212.30
+Nmap scan report for 192.168.212.30
+Host is up (0.00092s latency).
+
+PORT    STATE SERVICE VERSION
+22/tcp  open  ssh     OpenSSH 9.6p1 Ubuntu 3ubuntu13.20 (Ubuntu Linux; protocol 2.0)
+502/tcp open  mbap?
+MAC Address: 00:50:56:22:00:30 (VMware)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue Nov 17 07:50:36 2026 -- 1 IP address (1 host up) scanned in 21.48 seconds

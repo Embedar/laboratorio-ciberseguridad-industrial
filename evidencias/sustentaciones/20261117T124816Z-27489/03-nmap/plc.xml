@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.99 scan initiated Tue Nov 17 07:50:14 2026 as: /usr/lib/nmap/nmap -&#45;privileged -n -sT -sV -&#45;version-light -p 22,502 -oA /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/03-nmap/plc 192.168.212.30 -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -&#45;privileged -n -sT -sV -&#45;version-light -p 22,502 -oA /home/lorenzo/lab-plc/evidencias/sustentaciones/20261117T124816Z-27489/03-nmap/plc 192.168.212.30" start="1794919814" startstr="Tue Nov 17 07:50:14 2026" version="7.99" xmloutputversion="1.05">
+<scaninfo type="connect" protocol="tcp" numservices="2" services="22,502"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.212.30" addrtype="ipv4"/>
+<address addr="00:50:56:22:00:30" addrtype="mac" vendor="VMware"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1794919814" endtime="1794919836"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.212.30" addrtype="ipv4"/>
+<address addr="00:50:56:22:00:30" addrtype="mac" vendor="VMware"/>
+<hostnames>
+</hostnames>
+<ports><port protocol="tcp" portid="22"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="ssh" product="OpenSSH" version="9.6p1 Ubuntu 3ubuntu13.20" extrainfo="Ubuntu Linux; protocol 2.0" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:openbsd:openssh:9.6p1</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service></port>
+<port protocol="tcp" portid="502"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="mbap" method="table" conf="3"/></port>
+</ports>
+<times srtt="922" rttvar="2862" to="100000"/>
+</host>
+<runstats><finished time="1794919836" timestr="Tue Nov 17 07:50:36 2026" summary="Nmap done at Tue Nov 17 07:50:36 2026; 1 IP address (1 host up) scanned in 21.48 seconds" elapsed="21.48" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>
