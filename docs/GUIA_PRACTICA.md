@@ -16,3 +16,5 @@ Usar una carpeta nueva para cada corrida. Los hashes/tramas/puertos dinámicos d
 FTK ya se utilizó para incorporar la carpeta e inspeccionar el PCAP de referencia, con propiedades y hexadecimal visibles. No se creó AD1; el hash posterior se comprobó externamente con Get-FileHash. Si se exige un contenedor forense adicional, es un procedimiento diferente del ejercicio SHA256 solicitado.
 
 Para el entorno ya instalado: [comandos rápidos por entregable práctico](COMANDOS_RAPIDOS.md).
+
+Antes de repetir Telnet, leer [actividad3 explicada desde cero](ACTIVIDAD_3_EXPLICADA.md): propósito, TCP/puertos, papel de Rapid7/MITRE, CWE/CVE, captura de terminal y localización de tramas en el PCAP.

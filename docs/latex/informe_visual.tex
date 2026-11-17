@@ -19,36 +19,38 @@
 \newcommand{\pagina}[1]{\clearpage\section*{#1}}
 \title{\vspace{-1.3cm}\textbf{Auditoría de seguridad\\de un laboratorio industrial simulado}}
 \author{Lorenzo\\Universidad Santo Tomás -- Ciberseguridad en la Industria}
-\date{Práctica: 12 de noviembre de 2026\\\small Revisión documental: 16 de noviembre de 2026}
+\date{Práctica: 12 de noviembre de 2026\\\small Revisión documental: 17 de noviembre de 2026}
 
 \begin{document}
-\maketitle\vspace{-0.7cm}
+\label{pag:montaje1}\maketitle\vspace{-0.7cm}
 \section*{1. Montaje del laboratorio: preparación}
 \textbf{Objetivo.} Reconocer equipos y servicios, analizar tráfico, realizar una prueba controlada y verificar la integridad de la evidencia en una red virtual autorizada.
 
 \begin{enumerate}
 \item \textbf{Revisar el equipo disponible.} Se encontró VMware Workstation 26 y una Kali existente. Se reutilizó esa Kali; no se instaló otra ni se duplicó su disco. Se ajustó a 4 GB de RAM y 2 CPU, con respaldo previo de la configuración.
 \item \textbf{Definir la red.} Se eligió VMnet1 host-only, \texttt{192.168.212.0/24}. El anfitrión quedó en \texttt{.1}; se reservaron \texttt{.10}, \texttt{.20} y \texttt{.30} para los tres roles. Host-only también permite acceso desde el anfitrión.
-\item \textbf{Obtener la víctima.} Se descargó Metasploitable 2 de SourceForge, se comprobó el CRC del ZIP y se registró su SHA-256 local. Ese hash local acredita integridad de la copia; no se contrastó con una firma del proveedor.
-\item \textbf{Preparar el PLC.} Se descargó el VMDK Ubuntu 24.04 y se contrastó su SHA-256 con el listado oficial. Se generó una semilla NoCloud para crear el usuario y preparar SSH, VMware Tools y Java.
+\item \textbf{Obtener la víctima.} Se descargó Metasploitable 2 de SourceForge, se comprobó el CRC (control de errores) del archivo comprimido ZIP y se registró su SHA-256 local. Ese hash local acredita integridad de la copia; no se contrastó con una firma del proveedor.
+\item \textbf{Preparar el PLC.} Se descargó el disco virtual VMDK de Ubuntu 24.04 y se contrastó su SHA-256 con el listado oficial. Se generó una semilla NoCloud (archivo de configuración inicial) para crear el usuario y preparar SSH, VMware Tools y Java.
 \end{enumerate}
 
-\captura{0.89}{arquitectura.png}{Arquitectura implementada: roles, IP y recursos asignados.}
+\captura{0.77}{arquitectura.png}{Arquitectura implementada: roles, IP y recursos asignados.}
+\textbf{Cómo leer el diagrama (entregable 1).} La caja superior representa Windows; la línea central es la red compartida y las tres cajas inferiores son las máquinas. Las IP identifican equipos, RAM indica memoria y CPU indica procesadores virtuales. PLC significa controlador lógico programable: aquí se simula su comunicación con ModbusPal.\par
 \textbf{Simulación industrial.} ModbusPal 1.6b mantuvo cuatro registros de prueba y atendió las consultas Modbus TCP desde Kali.
 
-\pagina{1. Montaje del laboratorio: configuración y verificación}
+\pagina{1. Montaje del laboratorio: configuración y verificación}\label{pag:montaje2}
 \begin{enumerate}[start=5]
-\item \textbf{Aislar y configurar la víctima.} Se importó el disco, se dejó un único adaptador VMnet1 y se asignaron 512 MB y 1 CPU. Se identificó la IP DHCP por su MAC, se configuró \texttt{192.168.212.20/24} y se detuvo DHCP. No se conectó esta VM a NAT ni a la red física.
-\item \textbf{Aprovisionar y aislar el PLC.} El Ubuntu limpio usó NAT temporal para instalar paquetes. Después se apagó, se cambió a VMnet1 y se fijó \texttt{192.168.212.30/24}, con 768 MB y 1 CPU. La interfaz \texttt{ens33} quedó asociada a su MAC para conservar la configuración tras reiniciar.
-\item \textbf{Habilitar la administración y el simulador.} Se instalaron claves SSH dedicadas. En el PLC se instaló ModbusPal 1.6b con un adaptador Java propio, como servicio \texttt{modbuspal-lab}; se comprobó TCP 502 y una lectura FC03. Se configuraron cuatro registros constantes: \texttt{[250,1000,1,750]}.
-\item \textbf{Comprobar antes de auditar.} Los tres VMX tenían un único adaptador host-only. Se verificaron las IP, las rutas directas y la ausencia de gateway en los invitados; se desactivó su reenvío IP. Kali quedó en \texttt{192.168.212.10/24}, con SSH y herramientas de captura disponibles.
+\item \textbf{Aislar y configurar la víctima.} Se importó el disco, se dejó un único adaptador VMnet1 y se asignaron 512 MB y 1 CPU. Se identificó la IP automática (DHCP) por su MAC, identificador de la tarjeta de red, se configuró \texttt{192.168.212.20/24} y se detuvo DHCP. No se conectó esta VM a NAT ni a la red física.
+\item \textbf{Aprovisionar y aislar el PLC.} El Ubuntu limpio usó NAT (salida a través del anfitrión) temporal para instalar paquetes. Después se apagó, se cambió a VMnet1 y se fijó \texttt{192.168.212.30/24}, con 768 MB y 1 CPU. La interfaz \texttt{ens33} quedó asociada a su MAC para conservar la configuración tras reiniciar.
+\item \textbf{Habilitar la administración y el simulador.} Se instalaron claves SSH (Secure Shell, administración remota cifrada) dedicadas. En el PLC se instaló ModbusPal 1.6b con un adaptador Java propio, como servicio \texttt{modbuspal-lab}; se comprobó el puerto TCP 502 y una lectura FC03 (función 03: leer registros). Se configuraron cuatro registros constantes: \texttt{[250,1000,1,750]}.
+\item \textbf{Comprobar antes de auditar.} Los tres archivos VMX (configuración de las máquinas) tenían un único adaptador host-only. Se verificaron las IP, las rutas directas y la ausencia de gateway en los invitados; se desactivó su reenvío IP. Kali quedó en \texttt{192.168.212.10/24}, con SSH y herramientas de captura disponibles.
 \end{enumerate}
 
-\captura{0.91}{00-kali-estado-ssh.png}{Estado real de Kali: dirección, rutas, reenvío desactivado y versiones de herramientas.}
+\captura{0.83}{00-kali-estado-ssh.png}{Estado real de Kali: dirección, rutas, reenvío desactivado y versiones de herramientas.}
+\textbf{Cómo leer la captura.} La terminal muestra la interfaz de red \texttt{eth0} con IP \texttt{192.168.212.10/24}. La ruta a \texttt{192.168.212.0/24} permite llegar al laboratorio; la ausencia de una ruta por defecto evita una salida normal hacia otras redes. El valor \texttt{ip\_forward = 0} significa que Kali no reenvía tráfico entre redes.\par
 \textbf{Resultado del montaje.} La víctima y el PLC respondieron desde Kali. Solo se autorizó auditar \texttt{.20} y \texttt{.30}. Se comprobaron tanto la configuración de los adaptadores como las rutas de los invitados para mantener las pruebas en la red del laboratorio.
 
 
-\pagina{2. Inventario de dispositivos, IP, puertos y servicios}
+\pagina{2. Inventario de dispositivos, IP, puertos y servicios}\label{pag:inventario}
 \textbf{Paso 1: ubicar los roles.} Kali actuó como auditor; Metasploitable 2 fue la víctima y Ubuntu con ModbusPal simuló el PLC. Los equipos se comunicaron en \texttt{192.168.212.0/24}.
 
 \textbf{Paso 2: registrar los servicios identificados.} La tabla reúne los dispositivos y los resultados conservados. Todos los puertos indicados son TCP.
@@ -63,10 +65,10 @@ Ubuntu + ModbusPal (PLC) & 192.168.212.30 & 22 y 502, ambos abiertos & SSH (Open
 \end{tabularx}}
 
 \textbf{Paso 3: contrastar el reconocimiento.} Nmap identificó ambos blancos activos. Se exploraron todos los puertos TCP de la víctima y únicamente 22/502 del PLC; estos últimos no constituyen un sondeo completo del PLC.
-\captura{0.83}{01-nmap.png}{Reconocimiento Nmap: 30 puertos TCP abiertos y 65.505 cerrados en Metasploitable 2.}
-\textbf{Lectura de la captura.} La dirección identifica al dispositivo; las columnas PORT, STATE, SERVICE y VERSION relacionan los puertos abiertos con el servicio detectado. El inventario completo se presenta a continuación.
+\captura{0.76}{01-nmap.png}{Reconocimiento Nmap: 30 puertos TCP abiertos y 65.505 cerrados en Metasploitable 2.}
+\textbf{Lectura de la captura.} La dirección identifica al dispositivo; las columnas PORT, STATE, SERVICE y VERSION relacionan los puertos abiertos con el servicio detectado. Por ejemplo, la fila 23/tcp open telnet indica que la víctima acepta conexiones al servicio de terminal remota en el puerto 23. Un puerto abierto permite contactar un servicio; por sí solo no prueba una vulnerabilidad. Esta captura respalda el entregable 3; las tablas de esta página y la siguiente, el entregable 2.
 
-\pagina{3. Actividad 1: puertos y servicios identificados}
+\pagina{3. Actividad 1: puertos y servicios identificados}\label{pag:nmap}
 \textbf{Paso 1.} El descubrimiento identificó activos a \texttt{192.168.212.20} y \texttt{192.168.212.30}. \textbf{Paso 2.} Se exploraron los 65.535 puertos TCP de la víctima con detección ligera de versiones y scripts predeterminados; en el PLC solo se exploraron 22 y 502. \textbf{Paso 3.} Se relacionaron puertos, servicios y riesgos.
 
 
@@ -100,34 +102,125 @@ Ubuntu + ModbusPal (PLC) & 192.168.212.30 & 22 y 502, ambos abiertos & SSH (Open
 
 \textbf{Paso 4: seleccionar riesgos para las pruebas.} Telnet (23) permitió estudiar acceso con credenciales predeterminadas; HTTP (80) permitió observar información sin cifrar; Modbus (502) permitió examinar lecturas industriales sin autenticación. FTP anónimo y la configuración SMB complementaron el análisis. Los impactos y las medidas correspondientes se relacionan en la sección 8.
 
-\pagina{4. Actividad 2: captura y análisis de comunicaciones}
-\textbf{Paso 1: capturar.} Se inició dumpcap en \texttt{eth0} durante 90 segundos, limitado a tráfico que involucrara a \texttt{.20} o \texttt{.30}. Se conservaron \textbf{154 tramas}, con 0 descartes registrados en la interfaz.
 
-\textbf{Paso 2: reconocer TCP y HTTP.} Las tramas 1, 2 y 3 muestran SYN, SYN-ACK y ACK. La trama 4 contiene \texttt{GET /} desde \texttt{.10:37150} hacia \texttt{.20:80}; la trama 6 devuelve \texttt{200 OK}. El contenido HTTP es legible y no demuestra protección TLS.
-\captura{0.80}{02-http.png}{Wireshark: solicitud HTTP de Kali y respuesta de la víctima, con IP de origen y destino.}
+\pagina{4. Antes de analizar: herramientas y archivo de tráfico}\label{pag:conceptos}
+\textbf{Para qué sirve esta explicación.} La actividad 2 aporta las capturas y el análisis de comunicaciones del entregable 4. Su archivo de tráfico también permite comprobar lo ocurrido durante la prueba de la actividad 3 y después se utiliza para el ejercicio de integridad.
 
-\textbf{Paso 3: reconocer Modbus TCP.} Kali \texttt{.10} leyó el PLC \texttt{.30:502}, unidad 1, función 03, dirección PDU inicial 0 y cantidad 4. Las tramas 14/16, 25/27 y 35/37 forman tres pares de petición/respuesta, con valores \texttt{[250,1000,1,750]}. Son datos simulados, no mediciones físicas. Se aplicaron los filtros \texttt{modbus} y \texttt{tcp.port == 502}.
-\captura{0.80}{03-modbus.png}{Tres intercambios Modbus FC03. No se probó escritura de registros.}
+\textbf{Qué hace cada herramienta.} Kali es el sistema desde el que se audita; Nmap pregunta qué equipos y servicios responden. Dumpcap registra tráfico de una interfaz de red. Wireshark abre ese registro y presenta cada comunicación con sus campos y contenido. TShark permite consultar los mismos datos desde una terminal.
 
-\pagina{5. Actividad 3: investigación y prueba controlada}
-\textbf{Paso 1: elegir una condición insegura.} El inventario mostró Telnet en TCP 23. Rapid7 documenta la credencial de laboratorio \texttt{msfadmin/msfadmin}; MITRE describe el riesgo de conservar credenciales predeterminadas en CWE-1392. Se investigó esa debilidad y la exposición en claro de Telnet, relacionada con CWE-319 [1--3].
+\begin{tabularx}{\linewidth}{@{}P{3.3cm}Y@{}}\toprule
+\textbf{Concepto} & \textbf{Significado y uso en este laboratorio}\\\midrule
+IP (Internet Protocol) & La dirección identifica el equipo: \texttt{.10} es Kali, \texttt{.20} la víctima y \texttt{.30} el PLC, dentro de \texttt{192.168.212.0/24}.\\
+Puerto & Número que permite dirigir una conexión hacia un servicio del equipo. Aquí se usan 23 para Telnet, 80 para HTTP y 502 para Modbus TCP.\\
+TCP (Transmission Control Protocol) & Transporta un flujo de bytes entre dos extremos con control de orden y entrega. No cifra los datos por sí mismo. Una conexión necesita IP y puerto en ambos extremos.\\
+Trama, paquete y número & La trama es la unidad registrada en la interfaz; contiene, en estos intercambios, un paquete IP y datos TCP. Wireshark asigna a cada registro una fila numerada en la columna No. El número es local a ese archivo.\\
+PCAP (Packet Capture) & Nombre habitual del archivo que conserva tráfico capturado. Aquí el formato concreto es PCAPNG (Packet Capture Next Generation), extensión \texttt{.pcapng}; contiene bytes y metadatos, no una imagen de pantalla.\\
+Filtro de visualización & Selecciona qué registros muestra Wireshark, por ejemplo \texttt{http} o \texttt{telnet}. Oculta otras filas de la vista; no borra los datos del archivo.\\\bottomrule
+\end{tabularx}
 
-\textbf{Paso 2: ejecutar la prueba aislada.} Desde Kali se inició sesión únicamente en la víctima \texttt{192.168.212.20}. Se consultaron \texttt{id} y \texttt{uname -a}, y se cerró la conexión. La evidencia confirmó acceso como \texttt{uid=1000(msfadmin)}, no como root.
-\captura{0.93}{04-telnet.png}{Transcripción de la prueba: acceso con la credencial pública y consultas de identidad y kernel.}
+\textbf{De dónde salió el PCAP.} Se inició dumpcap en la interfaz \texttt{eth0} de Kali durante 90 segundos, con un filtro para la víctima \texttt{.20} y el PLC \texttt{.30}. Mientras seguía capturando se generaron HTTP, lecturas Modbus y la prueba Telnet. Al cerrar la captura quedaron \textbf{154 tramas} en \texttt{comunicaciones.pcapng}, de 20.940 bytes, con cero descartes registrados.
 
-\textbf{Paso 3: interpretar el resultado.} Las tramas 65 y 70 del PCAP contienen el usuario y la contraseña sintética en claro. Conocer la credencial permite el acceso observado; un tercero situado en un trayecto no confiable podría observar esas credenciales. No se explotó una CVE ni se modificaron archivos con los comandos de la prueba.
+\textbf{Dónde encontrarlo.} En Windows, dentro del laboratorio:\par
+{\small\ttfamily\raggedright evidencias/ejecuciones/20261112T163453Z-9047/\par 02-trafico/comunicaciones.pcapng\par}
+En Kali se conserva bajo \texttt{\textasciitilde/lab-plc/} con la misma ruta relativa. Se abre con \emph{File / Open} en Wireshark. El identificador de carpeta distingue la corrida original de cualquier comprobación nueva.
 
-\textbf{Paso 4: comprobar otro servicio.} FTP aceptó \texttt{anonymous}, devolvió código 230 y completó un listado vacío. La documentación oficial de \texttt{ftp-anon} explica esta comprobación [4]. No se demostró lectura de archivos, carga ni explotación de la puerta trasera de vsftpd.
+\textbf{Cómo leer las capturas siguientes.} Arriba aparece la lista de tramas; las columnas Source y Destination indican origen y destino. Al seleccionar una fila, el panel intermedio desglosa los protocolos y el inferior muestra los bytes. Las imágenes del informe son vistas de este archivo; el PCAP conserva el detalle para volver a revisarlo.
 
-\textbf{Mitigación propuesta.} Cambiar credenciales, retirar Telnet y FTP anónimo innecesarios y administrar por SSH. La corroboración posterior sería comprobar TCP 23 cerrado y rechazo de la credencial anterior. Estas medidas se proponen; no se aplicaron para conservar el laboratorio didáctico.
+\pagina{4. Actividad 2: conexión TCP y comunicación HTTP}\label{pag:http}
+\textbf{Qué se quería comprobar.} Reconocer el inicio de una conexión y relacionar una solicitud web con su respuesta. HTTP significa Hypertext Transfer Protocol: el protocolo usado aquí para pedir una página al servidor de la víctima.
 
-\pagina{6. Actividad 4: integridad SHA-256}
+\textbf{Paso 1: iniciar la captura antes de la consulta.} Dumpcap ya estaba registrando \texttt{eth0}. Desde Kali se solicitó la página de \texttt{http://192.168.212.20/} con curl, un cliente que realiza solicitudes desde la terminal.
+
+\textbf{Paso 2: reconocer el establecimiento TCP.} Las filas 1, 2 y 3 del PCAP corresponden a SYN (solicitud de conexión), SYN-ACK (aceptación y reconocimiento) y ACK (confirmación). Esta secuencia establece la conexión, antes de enviar la petición HTTP.
+\captura{0.91}{02-http.png}{Vista HTTP de la captura original: petición de Kali y respuesta de Metasploitable 2.}
+
+\textbf{Cómo leer esta imagen (entregable 4).} El filtro \texttt{http} deja visibles dos filas. La 4 sale de \texttt{192.168.212.10:37150} hacia \texttt{192.168.212.20:80}: \texttt{GET /} pide la página principal. La 6 va en sentido contrario y responde \texttt{200 OK}, que indica que la solicitud fue atendida. El puerto 37150 es el extremo temporal del cliente; el 80 corresponde al servidor web.
+
+\textbf{Qué demuestra.} Se reconocen emisor, receptor, solicitud y respuesta. El contenido es legible sin descifrarlo: esa sesión HTTP no usó TLS (Transport Layer Security, protección criptográfica del canal). Un observador con acceso al trayecto podría leer datos transmitidos de la misma forma; aquí se consultó una página pública del laboratorio.
+
+\textbf{Cómo corroborarlo.} Abrir el PCAP y aplicar \texttt{http}. Para ver también el inicio de esa conexión, usar \texttt{tcp.stream == 0}. Un stream es una conversación TCP; el número 0 pertenece a esta captura y puede cambiar en otra corrida.
+
+\pagina{4. Actividad 2: lectura industrial con ModbusPal}\label{pag:modbus}
+\textbf{Qué se quería comprobar.} Identificar una comunicación industrial y entender lo solicitado al PLC simulado. ModbusPal es el programa que mantiene los registros y responde por Modbus TCP; no es un equipo físico.
+
+\textbf{Paso 1: preparar la consulta.} El cliente de Kali contactó \texttt{192.168.212.30:502}. Solicitó a la unidad 1, identificador del dispositivo simulado, la función FC03: leer registros de almacenamiento de 16 bits. La dirección inicial fue 0 y la cantidad fue 4.
+
+\textbf{Paso 2: repetir y conservar.} Se realizaron tres consultas mientras dumpcap capturaba. Dirección PDU (Protocol Data Unit, parte del mensaje que contiene función y parámetros) 0 significa empezar por el primer registro solicitado; no es el número de una trama.
+\captura{0.91}{03-modbus.png}{Wireshark muestra tres consultas Modbus y sus tres respuestas.}
+
+\textbf{Cómo leer esta imagen (entregable 4).} El filtro \texttt{modbus} muestra seis filas. La 14 es una consulta de Kali al PLC y la 16 su respuesta; 25/27 y 35/37 son las dos repeticiones. La función 03 aparece en las peticiones y respuestas. Al expandir los detalles de la respuesta se reconocen cuatro valores: \texttt{[250,1000,1,750]}.
+
+\textbf{Qué significa el resultado.} El PLC devolvió los registros configurados, por lo que se comprobó la comunicación real con el motor de ModbusPal. Los valores son enteros de simulación sin unidades físicas asignadas. La consulta no proporcionó credenciales y los datos quedaron legibles en la captura: esto respalda el riesgo de lecturas desde clientes con acceso a la red. No se realizó escritura de registros.
+
+\textbf{Cómo corroborarlo.} Abrir el PCAP, aplicar \texttt{tcp.port == 502} o \texttt{modbus} y seleccionar las respuestas. Los números 14, 16, 25, 27, 35 y 37 solo identifican filas de esta corrida.
+
+\pagina{5. Actividad 3: propósito, Telnet y fuentes consultadas}\label{pag:telnet-conceptos}
+\textbf{Para qué entregable se hizo.} El entregable 6 pide evidencia de una prueba controlada de vulnerabilidad. Se eligió comprobar si la víctima aceptaba una credencial predeterminada mediante Telnet. El resultado también sustenta los riesgos del entregable 5 y las recomendaciones del entregable 8.
+
+{\raggedright\textbf{De dónde surgió la prueba.} En la actividad 1, Nmap informó \texttt{23/tcp open telnet} en \texttt{192.168.212.20}. Esto indicaba un servicio accesible; después se investigó y se probó si existía una condición insegura concreta.\par}
+
+\textbf{Qué es Telnet y cómo usa TCP.} Telnet permite utilizar una terminal de otro equipo a través de la red: el cliente envía lo escrito y el servidor devuelve preguntas de inicio de sesión y resultados de comandos. En este montaje el servidor escuchaba en el puerto TCP 23. TCP transportaba los bytes; Telnet organizaba la interacción de terminal [5]. El puerto identifica al servicio, no es una herramienta ni una vulnerabilidad por sí mismo.
+
+\begin{center}\small
+Kali \texttt{.10:55468} (cliente) $\longleftrightarrow$ TCP $\longleftrightarrow$ víctima \texttt{.20:23} (servidor Telnet)
+\end{center}
+
+\textbf{Dos problemas que se comprobaron por separado.} Primero, la víctima conservaba un usuario y contraseña públicos de instalación. Segundo, la sesión Telnet transmitió esos datos sin cifrarlos. Una contraseña nueva no resolvería por sí sola el segundo problema; por eso se recomienda también un canal protegido.
+
+\begin{tabularx}{\linewidth}{@{}P{2.5cm}Y@{}}\toprule
+\textbf{Nombre} & \textbf{Qué es y por qué se consultó}\\\midrule
+Rapid7 & Empresa de ciberseguridad cuya documentación oficial describe Metasploitable 2, una máquina intencionalmente vulnerable, y su credencial pública \texttt{msfadmin/msfadmin} [1]. Aquí fue una fuente de consulta; no se instaló un programa llamado Rapid7 para la prueba.\\
+MITRE & Organización sin ánimo de lucro que participa en iniciativas de conocimiento de ciberseguridad [6]. Se consultó su catálogo CWE para poner nombre a las debilidades observadas. MITRE no fue una herramienta ejecutada contra la víctima.\\
+CWE & Common Weakness Enumeration: catálogo de tipos de debilidades. \textbf{CWE-1392} clasifica el uso de credenciales predeterminadas; \textbf{CWE-319}, la transmisión de información sensible en claro [2--3]. Los números identifican categorías, no tramas ni puertos.\\
+CVE & Common Vulnerabilities and Exposures: sistema de identificadores de vulnerabilidades concretas divulgadas públicamente, con forma \texttt{CVE-año-número} [7]. Esta práctica comprobó condiciones inseguras sin demostrar la explotación de una CVE específica.\\\bottomrule
+\end{tabularx}
+
+\textbf{Relación con este caso.} La credencial aceptada se interpreta como CWE-1392; su contraseña legible en el tráfico se relaciona con CWE-319. La evidencia local demuestra lo ocurrido; las fuentes permiten explicarlo y clasificarlo.
+
+\pagina{5. Actividad 3: procedimiento y lectura de la terminal}\label{pag:telnet-terminal}
+\textbf{Paso 1: delimitar el blanco.} La prueba se realizó desde Kali únicamente contra \texttt{192.168.212.20:23}, dentro de la red aislada. La captura de la actividad 2 seguía activa para registrar también esta sesión.
+
+\textbf{Paso 2: iniciar sesión.} El script local \texttt{Prueba-Telnet.py} abrió el cliente Telnet, esperó los avisos \texttt{login:} y \texttt{Password:} y envió una vez \texttt{msfadmin} como usuario y como contraseña. El script usa pexpect, una biblioteca Python que automatiza preguntas y respuestas de terminal; no adivina contraseñas ni ejecuta fuerza bruta.
+
+\textbf{Paso 3: consultar y salir.} Tras aceptar la autenticación, se ejecutó \texttt{id} para consultar la identidad, \texttt{uname -a} para consultar información del sistema y \texttt{exit} para cerrar. No se solicitó modificar archivos ni elevar privilegios.
+\captura{0.88}{04-telnet.png}{Evidencia de terminal: inicio de sesión aceptado y consultas de identidad y sistema.}
+
+\textbf{Cómo leer esta captura (entregable 6).} La parte superior identifica el blanco y la credencial pública de prueba. La línea \texttt{RESULTADO: acceso con credencial por defecto y consultas confirmados} resume la ejecución. En la transcripción, \texttt{msfadmin@metasploitable} indica que ya se obtuvo una terminal en la víctima. La respuesta \texttt{uid=1000(msfadmin)} confirma la identidad: UID significa identificador de usuario y 1000 corresponde a msfadmin. No es root, la cuenta administrativa de UID 0. La línea Linux corresponde a la respuesta de \texttt{uname -a}; \texttt{logout} y el cierre final muestran la salida.
+
+\textbf{Qué demuestra y qué falta mirar.} Esta imagen demuestra acceso con la credencial conocida. No muestra las tramas 65 y 70 ni permite por sí sola ver la contraseña en la red: para eso se abre el PCAP, como se explica en la página siguiente.
+
+\pagina{5. Actividad 3: de dónde salen las tramas y qué prueban}\label{pag:telnet-pcap}
+\textbf{Paso 4: revisar el archivo de red.} Se volvió al mismo \texttt{comunicaciones.pcapng} generado durante la actividad 2. En Wireshark, cada fila conserva su número de captura aunque se aplique un filtro. ``Trama 65'' significa la fila 65 de ese archivo, no un paso del procedimiento ni una línea de la terminal.
+
+\textbf{Cómo encontrar la sesión.} Abrir el archivo, escribir \texttt{telnet} en la barra de filtros y pulsar Enter. Para localizar exactamente las dos filas citadas, usar:\par
+\texttt{frame.number == 65 || frame.number == 70}\par
+Las dos salen de Kali \texttt{192.168.212.10:55468} hacia la víctima \texttt{192.168.212.20:23}.
+
+\begin{tabularx}{\linewidth}{@{}rP{3.2cm}Y@{}}\toprule
+\textbf{Trama} & \textbf{Contenido enviado} & \textbf{Cómo se interpreta en la sesión}\\\midrule
+65 & \texttt{msfadmin} y salto de línea & Respuesta al aviso de usuario, \texttt{login:}.\\
+70 & \texttt{msfadmin} y salto de línea & Respuesta al aviso \texttt{Password:}; es la contraseña pública de laboratorio.\\
+77 & \texttt{id} y salto de línea & Consulta de identidad después de iniciar sesión.\\
+84 & \texttt{uname -a} y salto de línea & Consulta de información del sistema.\\
+100 & \texttt{exit} y salto de línea & Orden para terminar la sesión.\\\bottomrule
+\end{tabularx}
+
+\textbf{Qué significa ``en claro''.} Los bytes enviados se pueden convertir directamente a texto sin una clave de descifrado. Por ejemplo, los datos TCP de 65 y 70 contienen \texttt{6d736661646d696e0a}: la representación hexadecimal de \texttt{msfadmin} más un salto de línea. Como el usuario y la contraseña coinciden, se distinguen por el momento de la conversación y las preguntas del servidor.
+
+\textbf{Cómo verlo sin interpretar hexadecimal.} Seleccionar una fila Telnet y elegir \emph{Follow / TCP Stream}; mostrar como ASCII (American Standard Code for Information Interchange, representación de caracteres de texto). Esa vista reconstruye los mensajes de ambos extremos, incluidas las preguntas del servidor. El asterisco o la ausencia de eco de contraseña en una terminal no implican cifrado del tráfico. Un observador necesita acceso a la captura o al trayecto de comunicación; no se afirma que un tercero haya interceptado esta sesión.
+
+\textbf{Paso 5: concluir y proponer.} El inicio de sesión aceptado respalda CWE-1392; la contraseña transmitida sin cifrar respalda CWE-319. Se recomienda cambiar la credencial y retirar Telnet, usando SSH con autenticación adecuada. Para validar la corrección habría que comprobar que TCP 23 dejó de aceptar conexiones y que la credencial anterior se rechaza; esas medidas se proponen, no se aplicaron a la víctima didáctica.
+
+\textbf{Comprobación complementaria: FTP.} FTP significa File Transfer Protocol y sirve para transferir archivos. La prueba permitió entrar como \texttt{anonymous}; el código 230 indicó acceso aceptado y el listado estaba vacío [4]. No se demostró extracción ni carga. El resultado principal del entregable 6 es la prueba Telnet; FTP aporta una observación adicional.
+
+\pagina{6. Actividad 4: integridad SHA-256}\label{pag:hash}
+\textbf{Propósito (entregable 7).} SHA-256 (Secure Hash Algorithm de 256 bits) calcula un resumen de los bytes de un archivo, representado aquí por 64 caracteres hexadecimales. Sirve para comparar una evidencia con un valor de referencia y detectar cambios; no cifra el archivo.
 \begin{enumerate}
 \item \textbf{Seleccionar y registrar.} Se eligió el PCAP de la actividad 2, de \textbf{20.940 bytes}. Se calculó SHA-256 y se preservó una copia original sin permiso de escritura como protección frente a accidentes.
 \item \textbf{Modificar solo una copia.} A otra copia se añadieron 39 bytes: un salto de línea, el texto \texttt{ALTERACION CONTROLADA DEL LABORATORIO} y otro salto de línea. La copia alterada quedó en \textbf{20.979 bytes}.
 \item \textbf{Recalcular y comparar.} La fuente y el original conservaron el mismo hash; el de la copia alterada cambió. La exportación a Windows se contrastó con \texttt{Get-FileHash} y mantuvo el valor del PCAP.
 \end{enumerate}
-\captura{0.92}{05-integridad.png}{Cálculo, registro y verificación de los hashes de las dos copias.}
+\captura{0.82}{05-integridad.png}{Cálculo, registro y verificación de los hashes de las dos copias.}
 
 \begin{tabularx}{\linewidth}{@{}lY@{}}\toprule
 \textbf{Archivo} & \textbf{SHA-256 completo}\\\midrule
@@ -135,18 +228,22 @@ PCAP / original & {\ttfamily\footnotesize d33b57daa6af812c89638e4aaaac74c9\newli
 Copia alterada & {\ttfamily\footnotesize 75729913650b748c5889879b7e357d9a\newline 1759fd8f60f0ad37383b8b63305e48ec}\\\bottomrule
 \end{tabularx}
 
+\textbf{Cómo leer la captura.} Cada línea del cálculo asocia un resumen con un nombre de archivo. Los dos \texttt{OK} verifican que cada archivo coincide con el hash que se registró para él. El registro confirma además que la fuente coincide con el original y que la copia modificada es diferente. La tabla anterior reproduce ambos valores completos para poder compararlos.\par
 \textbf{Paso 4: explicar la integridad.} Un cambio en los bytes produjo un resumen diferente. El resultado \texttt{OK} para cada archivo significa que coincide con \emph{su propia entrada} del manifiesto, no que original y copia sean iguales. Se verificaron 26/26 entradas de la ejecución y 2/2 del ejercicio de integridad. Un hash aislado no demuestra autoría ni una cadena de custodia completa.
 
-\pagina{7. Revisión complementaria en FTK Imager}
+\pagina{7. Revisión complementaria en FTK Imager}\label{pag:ftk}
+\textbf{Para qué se utilizó.} FTK significa Forensic Toolkit. FTK Imager es una herramienta para incorporar e inspeccionar evidencias digitales; aquí se revisaron los archivos de tráfico como apoyo al entregable 7, sin analizar con ella los protocolos de red.\par
 \textbf{Paso 1: incorporar la evidencia.} Se añadió la carpeta \texttt{02-trafico} mediante \emph{File / Add Evidence Item / Contents of a Folder}. FTK Imager 8.3.0.27 mostró la fuente en Evidence Tree.
-\captura{0.9}{06-ftk-carpeta.jpg}{Carpeta de tráfico incorporada como Contents of Folder.}
+\captura{0.79}{06-ftk-carpeta.jpg}{Carpeta de tráfico incorporada como Contents of Folder.}
 
+\textbf{Lectura de la primera imagen.} Evidence Tree es el árbol de fuentes incorporadas. La entrada \texttt{02-trafico} y el tipo Contents of Folder indican que se agregó una carpeta; esto aún no demuestra que se haya seleccionado o examinado un archivo concreto.\par
 \textbf{Paso 2: inspeccionar el archivo.} Se expandió la carpeta y se seleccionó \texttt{comunicaciones.pcapng}. Se observaron tipo \emph{Regular File}, tamaño \textbf{20.940 bytes}, propiedades y vista hexadecimal.
-\captura{0.9}{07-ftk-inspeccion.jpg}{Archivo seleccionado, propiedades y bytes visibles en FTK.}
+\captura{0.79}{07-ftk-inspeccion.jpg}{Archivo seleccionado, propiedades y bytes visibles en FTK.}
 
-\textbf{Paso 3: corroborar.} El SHA-256 posterior, calculado externamente con Get-FileHash, coincidió con el original. Ese cálculo no se atribuye a FTK. La revisión fue de archivos: no se creó un contenedor AD1 ni una imagen física. El análisis de protocolos se realizó con Wireshark.
+\textbf{Lectura de la segunda imagen.} Ahora el PCAP está seleccionado. Las propiedades identifican su nombre y tamaño; el panel hexadecimal permite inspeccionar sus bytes. Esa vista muestra contenido del archivo, pero no equivale a la interpretación HTTP/Modbus/Telnet de Wireshark.\par
+\textbf{Paso 3: corroborar.} El SHA-256 posterior, calculado externamente con Get-FileHash, coincidió con el original. Ese cálculo no se atribuye a FTK. La revisión fue de archivos: no se creó un contenedor forense AD1 ni una imagen física de un disco. El análisis de protocolos se realizó con Wireshark.
 
-\pagina{8. Riesgos, recomendaciones y conclusiones}
+\pagina{8. Riesgos, recomendaciones y conclusiones}\label{pag:riesgos}
 {\small\renewcommand{\arraystretch}{1.14}
 \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.3cm} Y Y@{}}\toprule
 \textbf{Condición observada} & \textbf{Impacto potencial y límite} & \textbf{Medida y forma de corroborar}\\\midrule
@@ -165,9 +262,12 @@ Firma SMB desactivada según Nmap & Posible manipulación de comunicaciones en u
 
 \textbf{Referencias de investigación.}\par
 {\footnotesize\raggedright
-[1] Rapid7, \href{https://help.rapid7.com/metasploit/Content/getting-started/setting-up-test-env.html}{Setting Up a Vulnerable Target}: entorno y credencial de laboratorio.\par
+[1] Rapid7, \href{https://docs.rapid7.com/metasploit/metasploitable-2/}{Metasploitable 2}: entorno y credencial de laboratorio.\par
 [2] MITRE, \href{https://cwe.mitre.org/data/definitions/1392.html}{CWE-1392: Use of Default Credentials}.\par
 [3] MITRE, \href{https://cwe.mitre.org/data/definitions/319.html}{CWE-319: Cleartext Transmission of Sensitive Information}.\par
 [4] Nmap, \href{https://nmap.org/nsedoc/scripts/ftp-anon.html}{Documentación oficial del script ftp-anon}.\par
+[5] RFC Editor, \href{https://www.rfc-editor.org/rfc/rfc854}{RFC 854: Telnet Protocol Specification}.\par
+[6] MITRE, \href{https://www.mitre.org/who-we-are}{Who We Are}: organización y finalidad.\par
+[7] CVE Program, \href{https://www.cve.org/Resources/Media/Archives/OldWebsite/index.html}{Descripción del programa CVE}: catálogo de vulnerabilidades.\par
 Fuente académica: guía de la Universidad Santo Tomás suministrada para la práctica. Evidencias: ejecución \texttt{20261112T163453Z-9047}. Los comandos reproducibles se documentan en el README del repositorio privado.\par}
 \end{document}

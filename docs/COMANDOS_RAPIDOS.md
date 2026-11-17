@@ -2,6 +2,8 @@
 
 Para el entorno existente: Kali `192.168.212.10`, víctima `192.168.212.20` y PLC ModbusPal `192.168.212.30`. No reinstala ni cambia la configuración. Ejecutar los bloques en el orden indicado. Las comprobaciones de red se limitan a estos dos blancos del laboratorio.
 
+Si necesitas entender qué demuestra Telnet y de dónde salen las tramas, lee primero [actividad3 explicada](ACTIVIDAD_3_EXPLICADA.md).
+
 ## 1. Abrir la carpeta e iniciar las máquinas
 
 En **PowerShell de Windows**:

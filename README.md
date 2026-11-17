@@ -1,12 +1,14 @@
 # Laboratorio de ciberseguridad industrial
 
-Guía reproducible para un laboratorio **local y aislado** con Kali, Metasploitable 2 y el motor real de ModbusPal. La práctica de referencia se ejecutó el **12 de noviembre de 2026**; esta documentación se revisó el **16 de noviembre**.
+Guía reproducible para un laboratorio **local y aislado** con Kali, Metasploitable 2 y el motor real de ModbusPal. La práctica de referencia se ejecutó el **12 de noviembre de 2026**; esta documentación se revisó el **17 de noviembre**.
 
 **Lectura del resultado:** [informe PDF paso a paso](docs/latex/informe_visual.pdf), [fuente LaTeX](docs/latex/informe_visual.tex), [informe técnico ampliado](docs/INFORME_TECNICO.md) y [matriz por cada requisito](docs/MATRIZ_CUMPLIMIENTO.md).
 
 ModbusPal funciona mediante su biblioteca Java real con un adaptador propio sin escritorio. Los valores del PLC son simulados, no mediciones físicas.
 
 **Entorno ya montado:** usa [comandos rápidos de comprobación](docs/COMANDOS_RAPIDOS.md), sin repetir la instalación.
+
+**Para entender la prueba:** [actividad 3 desde cero: Telnet, PCAP, CWE y CVE](docs/ACTIVIDAD_3_EXPLICADA.md).
 
 ## Qué contiene y qué no contiene el repositorio
 

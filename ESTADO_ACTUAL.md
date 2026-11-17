@@ -27,3 +27,7 @@ Leer README.md para montar/repetir; docs/INFORME_TECNICO.md para detalle, docs/l
 
 
 Actualización: tabla explícita dispositivo/IP/puertos/servicios en el PDF, matriz de los cinco criterios y guía docs/COMANDOS_RAPIDOS.md para el entorno instalado.
+
+## Ampliación didáctica del17/11/2026
+
+Informe de13páginas y9imágenes; conceptos previos en pág.5 y actividad3 en págs.8–10. Se explican TCP/puertos, PCAPNG/tramas, Telnet, Rapid7/MITRE y CWE/CVE; cada captura tiene lectura e interpretación. Nueva guía docs/ACTIVIDAD_3_EXPLICADA.md, también integrada en el informe técnico. Relectura offline del PCAP original con TShark: las tramas65/70 contienen la credencial pública,77/84/100 los comandos id/uname/exit; sin nuevas conexiones a la víctima.
